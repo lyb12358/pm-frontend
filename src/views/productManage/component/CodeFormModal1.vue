@@ -20,9 +20,6 @@
     <div class="pt-3px pr-3px">
       <BasicForm @register="registerForm" :model="modelRef" @submit="handleSubmit" />
     </div>
-    <div class="pt-3px pr-3px">
-      <BasicForm @register="registerForm" :model="modelRef" @submit="handleSubmit" />
-    </div>
   </BasicModal>
 </template>
 <script setup lang="ts">
@@ -44,9 +41,9 @@
 
   const { info, success, warning, error } = createMessage
 
-  // const props = defineProps({
-  //   userData: { type: Object },
-  // })
+  const props = defineProps({
+    styleData: { type: Object },
+  })
   //让父组件表格刷新
   const emit = defineEmits(['isReload', 'register'])
   const modelRef = ref({})
@@ -116,7 +113,18 @@
       })
     }
   }
-
+  function onStyleDataReceive(data) {
+    styleDescData.value = {
+      prodStyle: data.prodStyle,
+      styleName: data.styleName,
+      familyName: data.familyName,
+      typeName: data.typeName,
+      attrName: data.attrName,
+      bigName: data.bigName,
+      middleName: data.middleName,
+      comName: data.comName,
+    }
+  }
   async function onDataReceive(data) {
     modalStatus.value = 1 //修改标题
     let prodClass: Array<number> = []
@@ -233,6 +241,6 @@
       )
     }
 
-    //v && props.userData && nextTick(() => onDataReceive(props.userData))
+    v && props.styleData && nextTick(() => onStyleDataReceive(props.styleData))
   }
 </script>

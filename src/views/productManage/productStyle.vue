@@ -29,7 +29,7 @@
         </template>
       </template>
       <template #toolbar>
-        <a-button preIcon="mdi:plus-thick" type="primary" @click="openModal1"> 新建 </a-button>
+        <a-button preIcon="mdi:plus-thick" type="primary" @click="openStyleModal"> 新建 </a-button>
       </template>
     </BasicTable>
     <StyleFormModal1 @register="register1" @is-reload="isReload" />
@@ -92,14 +92,14 @@
     getProdStyleById(record.id).then((data) => {
       if (data.code == 20000) {
         success(data.msg)
-        openModal1(true, data.data)
+        openStyleModal(true, data.data)
       } else {
         error(data.msg)
       }
     })
   }
   //modal
-  const [register1, { openModal: openModal1 }] = useModal()
+  const [register1, { openModal: openStyleModal }] = useModal()
 
   onMounted(async () => {
     getForm().updateSchema({

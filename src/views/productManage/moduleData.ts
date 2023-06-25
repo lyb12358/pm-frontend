@@ -147,7 +147,7 @@ export const codeModalSchemas: FormSchema[] = [
     field: 'prodCode',
     component: 'Input',
     label: '编号',
-    rules: [{ max: 20, required: true, message: '物料编号是必填项,且不超过20位' }],
+    rules: [{ max: 20, required: true, message: '编号是必填项,且不超过20位' }],
   },
   {
     field: 'prodName',
@@ -353,6 +353,12 @@ export const codeModalSchemas: FormSchema[] = [
       span: 24,
     },
     label: '备注',
+  },
+  {
+    field: 'isThird',
+    component: 'Switch',
+    label: '是否生成三等品',
+    defaultValue: false,
   },
 ]
 //style
