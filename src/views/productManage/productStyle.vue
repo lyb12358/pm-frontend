@@ -20,9 +20,14 @@
           <TableAction
             :dropDownActions="[
               {
-                label: '修改',
+                label: '修改款式信息',
                 icon: 'ic:outline-delete-outline',
                 onClick: updateStyle.bind(null, record),
+              },
+              {
+                label: '新增同款商品编号',
+                icon: 'ic:outline-delete-outline',
+                onClick: addCode.bind(null, record),
               },
             ]"
           />
@@ -33,6 +38,7 @@
       </template>
     </BasicTable>
     <StyleFormModal1 @register="register1" @is-reload="isReload" />
+    <CodeFormModal1 @register="register2" @is-reload="isReload" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
@@ -41,6 +47,7 @@
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
   import { useModal } from '@/components/Modal'
   import StyleFormModal1 from './component/StyleFormModal1.vue'
+  import CodeFormModal1 from './component/CodeFormModal1.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
   import { getProdStyleColumns, getProdStyleFormConfig } from './moduleData'
@@ -98,8 +105,19 @@
       }
     })
   }
+  function addCode(record: any) {
+    getProdStyleById(record.id).then((data) => {
+      if (data.code == 20000) {
+        success(data.msg)
+        openCodeModal(true, data.data)
+      } else {
+        error(data.msg)
+      }
+    })
+  }
   //modal
   const [register1, { openModal: openStyleModal }] = useModal()
+  const [register2, { openModal: openCodeModal }] = useModal()
 
   onMounted(async () => {
     getForm().updateSchema({

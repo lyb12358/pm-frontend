@@ -78,13 +78,8 @@
   }
   function handleSubmit(values) {
     loading.value = true
-    values.matFamily = values.prodClass[0]
-    values.matType = values.prodClass[1]
-    values.bigType = values.prodClass[2]
-    values.prodClass[3] && (values.middleType = values.prodClass[3])
-    values.prodClass[4] && (values.smallType = values.prodClass[4])
     if (modalStatus.value) {
-      updateProdCode(values).then((data) => {
+      updateProdCode(values, false).then((data) => {
         if (data.code == 20000) {
           success(data.msg)
           closeModal()
@@ -100,7 +95,7 @@
       values.isDel = 0
       values.status = 1
       values.isSync = 1
-      addProdCode(values).then((data) => {
+      addProdCode(values, values.isThird).then((data) => {
         if (data.code == 20000) {
           success(data.msg)
           closeModal()
@@ -127,52 +122,63 @@
   }
   async function onDataReceive(data) {
     modalStatus.value = 1 //修改标题
-    let prodClass: Array<number> = []
-    data.matFamily && prodClass.push(data.matFamily)
-    data.matType && prodClass.push(data.matType)
-    data.bigType && prodClass.push(data.bigType)
-    data.middleType && prodClass.push(data.middleType)
-    data.smallType && prodClass.push(data.smallType)
     //初次修改时触发cat、spe回调
-    if (prodClass.length > 2) {
+    updateSchema([
+      {
+        field: 'matCat',
+        componentProps: {
+          options: (await getProdCatOptions()).filter((item) => item.classId == data.bigType),
+        },
+      },
+      {
+        field: 'matSpe',
+        componentProps: {
+          options: await getProdSpeOptionsByParent(data.bigType),
+        },
+      },
+    ])
+    data.middleType &&
       updateSchema([
         {
-          field: 'matCat',
+          field: 'smallType',
           componentProps: {
-            options: (await getProdCatOptions()).filter((item) => item.classId == prodClass[2]),
-          },
-        },
-        {
-          field: 'matSpe',
-          componentProps: {
-            options: await getProdSpeOptionsByParent(prodClass[2]),
+            options: await getProdClassOptionsByParent(data.middleType),
           },
         },
       ])
-    }
     modelRef.value = {
       id: data.id,
-      matCode: data.matCode,
-      matName: data.matName,
-      comId: data.comId,
-      prodClass: prodClass,
-      matCat: data.matCat,
-      matSpe: data.matSpe,
-      matAttr: data.matAttr,
+      prodCode: data.prodCode,
+      prodName: data.prodName,
+      prodCat: data.prodCat,
+      prodSpe: data.prodSpe,
+      smallType: data.smallType,
+      prodMat: data.prodMat,
       retailPrice: data.retailPrice,
       supplyPrice: data.supplyPrice,
       costPrice: data.costPrice,
-      matYear: data.matYear,
-      matUnit: data.matUnit,
-      matColor: data.matColor,
+      costPrice2: data.costPrice2,
+      costPrice3: data.costPrice3,
+      costPrice4: data.costPrice4,
+      prodColor: data.prodColor,
+      netWeight: data.netWeight,
       numModel: data.numModel,
+      boxModel: data.boxModel,
       boxWarn: data.boxWarn,
       boxNum: data.boxNum,
       boxVolume: data.boxVolume,
       boxWeight: data.boxWeight,
-      collectTime: data.collectTime,
-      vipPrice: data.vipPrice,
-      point: data.point,
+      prodCycle: data.prodCycle,
+      isRemind: data.isRemind,
+      isSecurity: data.isSecurity,
+      isRate: data.isRate,
+      isQxmini: data.isQxmini,
+      code69: data.code69,
+      grossWeight: data.grossWeight,
+      singleWeight: data.singleWeight,
+      pakMat: data.pakMat,
+      pakSize: data.pakSize,
+      remark: data.remark,
     }
   }
 
@@ -183,58 +189,19 @@
         updateSchema([
           //code 修改时只读
           {
-            field: 'matCode',
+            field: 'prodCode',
             componentProps: {
               disabled: Boolean(modalStatus.value),
             },
           },
           {
-            field: 'matAttr',
-            componentProps: {
-              options: (await paramOptions).filter((item) => item.parentId == 606),
-            },
+            field: 'isThird',
+            show: Boolean(!modalStatus.value),
           },
           {
-            field: 'matYear',
-            componentProps: {
-              options: (await paramOptions).filter((item) => item.parentId == 464),
-            },
-          },
-          {
-            field: 'matUnit',
-            componentProps: {
-              options: (await paramOptions).filter((item) => item.parentId == 458),
-            },
-          },
-          {
-            field: 'matColor',
+            field: 'prodColor',
             componentProps: {
               options: (await paramOptions).filter((item) => item.parentId == 466),
-            },
-          },
-          {
-            field: 'prodClass',
-            componentProps: {
-              options: await getMatClassTree(),
-              onChange: async (e) => {
-                console.log(e)
-                if (e.length == 3) {
-                  updateSchema([
-                    {
-                      field: 'matCat',
-                      componentProps: {
-                        options: (await getProdCatOptions()).filter((item) => item.classId == e[2]),
-                      },
-                    },
-                    {
-                      field: 'matSpe',
-                      componentProps: {
-                        options: await getProdSpeOptionsByParent(e[2]),
-                      },
-                    },
-                  ])
-                }
-              },
             },
           },
         ]),
