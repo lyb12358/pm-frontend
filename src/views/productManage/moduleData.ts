@@ -144,6 +144,12 @@ export const codeModalSchemas: FormSchema[] = [
     show: false,
   },
   {
+    field: 'styleId',
+    component: 'Input',
+    label: '款号',
+    show: false,
+  },
+  {
     field: 'prodCode',
     component: 'Input',
     label: '编号',
@@ -196,7 +202,6 @@ export const codeModalSchemas: FormSchema[] = [
     component: 'InputNumber',
     label: '零售价',
     rules: [{ type: 'number', min: 0, max: 999999, required: true, message: '请填写有效值' }],
-    defaultValue: 0,
     componentProps: { min: 0, max: 999999, precision: 2 },
   },
   {
@@ -204,7 +209,6 @@ export const codeModalSchemas: FormSchema[] = [
     component: 'InputNumber',
     label: '供应价',
     rules: [{ type: 'number', min: 0, max: 999999, required: true, message: '请填写有效值' }],
-    defaultValue: 0,
     componentProps: { min: 0, max: 999999, precision: 2 },
   },
   {
@@ -212,31 +216,27 @@ export const codeModalSchemas: FormSchema[] = [
     component: 'InputNumber',
     label: '成本价',
     rules: [{ type: 'number', min: 0, max: 999999, required: true, message: '请填写有效值' }],
-    defaultValue: 0,
     componentProps: { min: 0, max: 999999, precision: 2 },
   },
   {
     field: 'costPrice2',
     component: 'InputNumber',
     label: '成本价2',
-    rules: [{ type: 'number', min: 0, max: 999999, required: true, message: '请填写有效值' }],
-    defaultValue: 0,
+    rules: [{ type: 'number', min: 0, max: 999999, message: '请填写有效值' }],
     componentProps: { min: 0, max: 999999, precision: 2 },
   },
   {
     field: 'costPrice3',
     component: 'InputNumber',
     label: '成本价3',
-    rules: [{ type: 'number', min: 0, max: 999999, required: true, message: '请填写有效值' }],
-    defaultValue: 0,
+    rules: [{ type: 'number', min: 0, max: 999999, message: '请填写有效值' }],
     componentProps: { min: 0, max: 999999, precision: 2 },
   },
   {
     field: 'costPrice4',
     component: 'InputNumber',
     label: '成本价4',
-    rules: [{ type: 'number', min: 0, max: 999999, required: true, message: '请填写有效值' }],
-    defaultValue: 0,
+    rules: [{ type: 'number', min: 0, max: 999999, message: '请填写有效值' }],
     componentProps: { min: 0, max: 999999, precision: 2 },
   },
   {

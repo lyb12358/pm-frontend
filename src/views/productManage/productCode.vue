@@ -22,13 +22,12 @@
               {
                 label: '修改',
                 icon: 'ic:outline-delete-outline',
-                color: 'error',
-                onClick: handleOpen.bind(null, record),
+                onClick: updateCode.bind(null, record),
               },
               {
                 label: '新增同款商品',
                 icon: 'ic:outline-delete-outline',
-                onClick: handleOpen.bind(null, record),
+                onClick: addBrotherCode.bind(null, record),
               },
               {
                 label: '上传图片',
@@ -60,24 +59,32 @@
         </template>
       </template>
       <template #toolbar>
-        <a-button preIcon="mdi:page-next-outline" @click="handleOpen"> 新建 </a-button>
+        <a-button preIcon="mdi:page-next-outline" type="primary" @click="openSearchStyleModal">
+          新建
+        </a-button>
       </template>
     </BasicTable>
+    <CodeFormModal1 @register="register1" @is-reload="isReload" :styleData="styleData" />
+    <CodeFormModal2 @register="register2" @check="addCode" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
   import { reactive, onMounted, ref, toRef, toRefs } from 'vue'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
+  import { useModal } from '@/components/Modal'
+  import CodeFormModal1 from './component/CodeFormModal1.vue'
+  import CodeFormModal2 from './component/CodeFormModal2.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
   import { getProdCodeColumns, getProdCodeFormConfig } from './moduleData'
   import { PageWrapper } from '@/components/Page'
-  import { getProdCodeList } from '@/api/productManage/productCode'
+  import { getProdCodeList, getProdCodeById } from '@/api/productManage/productCode'
   import { getProdClassTree } from '@/api/productManage/productParam'
 
   const baseApi = 'https://ims-backend.beyond-itservice.com'
   const searchInfo = reactive<any>({})
+  const styleData = ref({})
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -90,7 +97,7 @@
     striped: false,
     useSearchForm: true,
     showTableSetting: true,
-    tableSetting: { fullScreen: true },
+    tableSetting: { fullScreen: false },
     pagination: { pageSize: 10 },
     searchInfo,
     showIndexColumn: false,
@@ -111,6 +118,36 @@
       return [noImage]
     }
   }
+  function isReload(value) {
+    value && reload()
+  }
+  function updateCode(record: any) {
+    getProdCodeById(record.id).then((data) => {
+      if (data.code == 20000) {
+        styleData.value = data.data
+        openCodeModal(true, data.data)
+      } else {
+        error(data.msg)
+      }
+    })
+  }
+  function addCode(record: any) {
+    styleData.value = record
+    openCodeModal(true)
+  }
+  function addBrotherCode(record: any) {
+    getProdCodeById(record.id).then((data) => {
+      if (data.code == 20000) {
+        styleData.value = data.data
+        openCodeModal(true)
+      } else {
+        error(data.msg)
+      }
+    })
+  }
+  //modal
+  const [register1, { openModal: openCodeModal }] = useModal()
+  const [register2, { openModal: openSearchStyleModal }] = useModal()
   function handleOpen(record: any) {
     console.log('点击了启用', record)
   }

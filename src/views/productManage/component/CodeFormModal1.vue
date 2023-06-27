@@ -108,7 +108,7 @@
       })
     }
   }
-  function onStyleDataReceive(data) {
+  async function onStyleDataReceive(data) {
     styleDescData.value = {
       prodStyle: data.prodStyle,
       styleName: data.styleName,
@@ -119,19 +119,28 @@
       middleName: data.middleName,
       comName: data.comName,
     }
-  }
-  async function onDataReceive(data) {
-    modalStatus.value = 1 //修改标题
-    //初次修改时触发cat、spe回调
+    //when add new code
+    if (!modalStatus.value) {
+      updateSchema([
+        {
+          field: 'styleId',
+          defaultValue: data.id,
+        },
+        {
+          field: 'prodName',
+          defaultValue: data.styleName,
+        },
+      ])
+    }
     updateSchema([
       {
-        field: 'matCat',
+        field: 'prodCat',
         componentProps: {
           options: (await getProdCatOptions()).filter((item) => item.classId == data.bigType),
         },
       },
       {
-        field: 'matSpe',
+        field: 'prodSpe',
         componentProps: {
           options: await getProdSpeOptionsByParent(data.bigType),
         },
@@ -146,8 +155,12 @@
           },
         },
       ])
+  }
+  function onDataReceive(data) {
+    modalStatus.value = 1 //修改标题
     modelRef.value = {
       id: data.id,
+      styleId: data.styleId,
       prodCode: data.prodCode,
       prodName: data.prodName,
       prodCat: data.prodCat,
@@ -172,7 +185,7 @@
       isRemind: data.isRemind,
       isSecurity: data.isSecurity,
       isRate: data.isRate,
-      isQxmini: data.isQxmini,
+      isQxmini: data.codeIsQxmini,
       code69: data.code69,
       grossWeight: data.grossWeight,
       singleWeight: data.singleWeight,

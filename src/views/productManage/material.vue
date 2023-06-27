@@ -65,7 +65,7 @@
     striped: false,
     useSearchForm: true,
     showTableSetting: true,
-    tableSetting: { fullScreen: true },
+    tableSetting: { fullScreen: false },
     pagination: { pageSize: 10 },
     searchInfo,
     showIndexColumn: false,
@@ -90,7 +90,6 @@
   function updateMat(record: any) {
     getMatById(record.id).then((data) => {
       if (data.code == 20000) {
-        success(data.msg)
         openModal1(true, data.data)
       } else {
         error(data.msg)

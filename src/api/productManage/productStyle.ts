@@ -19,6 +19,10 @@ export const getProdStyleById = (id) =>
   simpleHttp.get<ResponseBean<any>>({
     url: `/prodStyle/id/${id}`,
   })
+export const getProdStyleByProdStyle = (prodStyle) =>
+  simpleHttp.get<ResponseBean<any>>({
+    url: `/prodStyle/prodStyle/${prodStyle}`,
+  })
 export const addProdStyle = (data) =>
   simpleHttp.post<ResponseBean<any>>({
     url: '/prodStyle',

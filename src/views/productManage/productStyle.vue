@@ -25,7 +25,7 @@
                 onClick: updateStyle.bind(null, record),
               },
               {
-                label: '新增同款商品编号',
+                label: '增加同款式商品',
                 icon: 'ic:outline-delete-outline',
                 onClick: addCode.bind(null, record),
               },
@@ -38,7 +38,7 @@
       </template>
     </BasicTable>
     <StyleFormModal1 @register="register1" @is-reload="isReload" />
-    <CodeFormModal1 @register="register2" @is-reload="isReload" />
+    <CodeFormModal1 @register="register2" @is-reload="isReload" :styleData="styleData" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
@@ -61,6 +61,7 @@
 
   const baseApi = 'https://ims-backend.beyond-itservice.com'
   const searchInfo = reactive<any>({})
+  const styleData = ref({})
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -73,7 +74,7 @@
     striped: false,
     useSearchForm: true,
     showTableSetting: true,
-    tableSetting: { fullScreen: true },
+    tableSetting: { fullScreen: false },
     pagination: { pageSize: 10 },
     searchInfo,
     showIndexColumn: false,
@@ -98,7 +99,6 @@
   function updateStyle(record: any) {
     getProdStyleById(record.id).then((data) => {
       if (data.code == 20000) {
-        success(data.msg)
         openStyleModal(true, data.data)
       } else {
         error(data.msg)
@@ -108,8 +108,8 @@
   function addCode(record: any) {
     getProdStyleById(record.id).then((data) => {
       if (data.code == 20000) {
-        success(data.msg)
-        openCodeModal(true, data.data)
+        styleData.value = data.data
+        openCodeModal(true)
       } else {
         error(data.msg)
       }
