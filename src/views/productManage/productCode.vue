@@ -59,15 +59,16 @@
         </template>
       </template>
       <template #toolbar>
-        <BasicUpload
-          ref="upload"
-          :maxSize="20"
-          :maxNumber="10"
-          @change="handleChange"
-          :api="uploadApi"
-          class="my-5"
-          :accept="['image/*']"
-        />
+        <div :v-show="false">
+          <BasicUpload
+            ref="upload"
+            :maxSize="20"
+            :maxNumber="10"
+            @change="handleChange"
+            :api="uploadApi"
+            class="my-5"
+            :accept="['image/*']"
+        /></div>
         <a-button preIcon="mdi:page-next-outline" type="primary" @click="openSearchStyleModal">
           新建
         </a-button>
