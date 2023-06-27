@@ -32,7 +32,7 @@
               {
                 label: '上传图片',
                 icon: 'ic:outline-delete-outline',
-                onClick: handleOpen.bind(null, record),
+                onClick: handleUpload.bind(null, record),
               },
               {
                 label: '下载图片',
@@ -59,6 +59,15 @@
         </template>
       </template>
       <template #toolbar>
+        <BasicUpload
+          ref="upload"
+          :maxSize="20"
+          :maxNumber="10"
+          @change="handleChange"
+          :api="uploadApi"
+          class="my-5"
+          :accept="['image/*']"
+        />
         <a-button preIcon="mdi:page-next-outline" type="primary" @click="openSearchStyleModal">
           新建
         </a-button>
@@ -73,6 +82,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
   import { useModal } from '@/components/Modal'
+  import { BasicUpload } from '@/components/Upload'
+  import { uploadApi } from '@/api/sys/upload'
   import CodeFormModal1 from './component/CodeFormModal1.vue'
   import CodeFormModal2 from './component/CodeFormModal2.vue'
   import { Tag } from 'ant-design-vue'
@@ -85,6 +96,7 @@
   const baseApi = 'https://ims-backend.beyond-itservice.com'
   const searchInfo = reactive<any>({})
   const styleData = ref({})
+  const upload = ref()
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -144,6 +156,12 @@
         error(data.msg)
       }
     })
+  }
+  function handleUpload(record: any) {
+    upload.value.openUploadModal()
+  }
+  function handleChange(list: string[]) {
+    createMessage.info(`已上传文件${JSON.stringify(list)}`)
   }
   //modal
   const [register1, { openModal: openCodeModal }] = useModal()
