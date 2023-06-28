@@ -25,11 +25,28 @@
                 color: 'error',
                 onClick: updateMat.bind(null, record),
               },
+              {
+                label: '上传图片',
+                icon: 'ic:outline-delete-outline',
+                onClick: handleUpload.bind(null, record),
+              },
             ]"
           />
         </template>
       </template>
       <template #toolbar>
+        <!-- 平时隐藏上传按钮，通过其他按钮来控制显示 -->
+        <div v-show="false">
+          <BasicUpload
+            ref="singleUpload"
+            :maxSize="5"
+            :maxNumber="1"
+            @change="handleChange"
+            :api="uploadMatImg"
+            :uploadParams="singleImgParam"
+            class="my-5"
+            :accept="['image/*']"
+        /></div>
         <a-button preIcon="mdi:page-next-outline" type="primary" @click="openModal1">
           新建
         </a-button>
@@ -43,16 +60,19 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
   import { useModal } from '@/components/Modal'
+  import { BasicUpload } from '@/components/Upload'
   import MatFormModal1 from './component/MatFormModal1.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
-  import { getMaterialColumns, getMaterialFormConfig } from './moduleData'
+  import { baseApi, getMaterialColumns, getMaterialFormConfig } from './moduleData'
   import { PageWrapper } from '@/components/Page'
   import { getMaterialList, getMatById } from '@/api/productManage/material'
   import { getMatClassTree } from '@/api/productManage/productParam'
+  import { uploadMatImg } from '@/api/productManage/productPlus'
 
-  const baseApi = 'https://ims-backend.beyond-itservice.com'
   const searchInfo = reactive<any>({})
+  const singleUpload = ref()
+  const singleImgParam = ref({ id: null })
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -95,6 +115,15 @@
         error(data.msg)
       }
     })
+  }
+  //upload
+  function handleUpload(record: any) {
+    singleImgParam.value.id = record.id
+    singleUpload.value.fileList = []
+    singleUpload.value.openUploadModal()
+  }
+  function handleChange(list: string[]) {
+    reload()
   }
   //modal
   const [register1, { openModal: openModal1 }] = useModal()

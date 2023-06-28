@@ -6,6 +6,7 @@ import { FormSchema } from '@/components/Form/index'
 import type { RuleObject } from 'ant-design-vue/lib/form/interface'
 import { DescItem } from '@/components/Description/index'
 
+export const baseApi = 'http://11.15.3.176:9090'
 //code
 export function getProdCodeColumns(): BasicColumn[] {
   return [

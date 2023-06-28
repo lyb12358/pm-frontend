@@ -42,3 +42,27 @@ export function uploadCodeImg(
     params,
   )
 }
+export function uploadStyleImg(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: ProgressEvent) => void,
+) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: '/basic-api/imageUpload/prodStyle',
+      onUploadProgress,
+    },
+    params,
+  )
+}
+export function uploadMatImg(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: ProgressEvent) => void,
+) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: '/basic-api/imageUpload/mat',
+      onUploadProgress,
+    },
+    params,
+  )
+}

@@ -29,11 +29,28 @@
                 icon: 'ic:outline-delete-outline',
                 onClick: addCode.bind(null, record),
               },
+              {
+                label: '上传图片',
+                icon: 'ic:outline-delete-outline',
+                onClick: handleUpload.bind(null, record),
+              },
             ]"
           />
         </template>
       </template>
       <template #toolbar>
+        <!-- 平时隐藏上传按钮，通过其他按钮来控制显示 -->
+        <div v-show="false">
+          <BasicUpload
+            ref="singleUpload"
+            :maxSize="5"
+            :maxNumber="1"
+            @change="handleChange"
+            :api="uploadStyleImg"
+            :uploadParams="singleImgParam"
+            class="my-5"
+            :accept="['image/*']"
+        /></div>
         <a-button preIcon="mdi:plus-thick" type="primary" @click="openStyleModal"> 新建 </a-button>
       </template>
     </BasicTable>
@@ -46,11 +63,12 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
   import { useModal } from '@/components/Modal'
+  import { BasicUpload } from '@/components/Upload'
   import StyleFormModal1 from './component/StyleFormModal1.vue'
   import CodeFormModal1 from './component/CodeFormModal1.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
-  import { getProdStyleColumns, getProdStyleFormConfig } from './moduleData'
+  import { baseApi, getProdStyleColumns, getProdStyleFormConfig } from './moduleData'
   import { PageWrapper } from '@/components/Page'
   import {
     getProdStyleList,
@@ -58,10 +76,12 @@
     deleteProdStyle,
   } from '@/api/productManage/productStyle'
   import { getProdClassTreeOnMiddleType } from '@/api/productManage/productParam'
+  import { uploadStyleImg } from '@/api/productManage/productPlus'
 
-  const baseApi = 'https://ims-backend.beyond-itservice.com'
   const searchInfo = reactive<any>({})
   const styleData = ref({})
+  const singleUpload = ref()
+  const singleImgParam = ref({ id: null })
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -114,6 +134,15 @@
         error(data.msg)
       }
     })
+  }
+  //upload
+  function handleUpload(record: any) {
+    singleImgParam.value.id = record.id
+    singleUpload.value.fileList = []
+    singleUpload.value.openUploadModal()
+  }
+  function handleChange(list: string[]) {
+    reload()
   }
   //modal
   const [register1, { openModal: openStyleModal }] = useModal()

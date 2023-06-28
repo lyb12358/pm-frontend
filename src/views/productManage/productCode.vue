@@ -45,11 +45,6 @@
                 onClick: handleOpen.bind(null, record),
               },
               {
-                label: '查看日志',
-                icon: 'ic:outline-delete-outline',
-                onClick: handleOpen.bind(null, record),
-              },
-              {
                 label: '更换绑定',
                 icon: 'ic:outline-delete-outline',
                 onClick: handleOpen.bind(null, record),
@@ -67,7 +62,7 @@
             :maxNumber="1"
             @change="handleChange"
             :api="uploadCodeImg"
-            :uploadParams="codeImgParam"
+            :uploadParams="singleImgParam"
             class="my-5"
             :accept="['image/*']"
         /></div>
@@ -91,17 +86,16 @@
   import CodeFormModal2 from './component/CodeFormModal2.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
-  import { getProdCodeColumns, getProdCodeFormConfig } from './moduleData'
+  import { baseApi, getProdCodeColumns, getProdCodeFormConfig } from './moduleData'
   import { PageWrapper } from '@/components/Page'
   import { getProdCodeList, getProdCodeById } from '@/api/productManage/productCode'
   import { getProdClassTree } from '@/api/productManage/productParam'
   import { uploadCodeImg } from '@/api/productManage/productPlus'
 
-  const baseApi = 'http://11.15.3.176:9090'
   const searchInfo = reactive<any>({})
   const styleData = ref({})
   const singleUpload = ref()
-  const codeImgParam = ref({ id: null })
+  const singleImgParam = ref({ id: null })
   const multiUpload = ref()
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
@@ -165,7 +159,7 @@
   }
   //upload
   function handleUpload(record: any) {
-    codeImgParam.value.id = record.id
+    singleImgParam.value.id = record.id
     singleUpload.value.fileList = []
     singleUpload.value.openUploadModal()
   }
