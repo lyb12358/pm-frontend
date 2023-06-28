@@ -2,7 +2,7 @@
   <BasicModal
     v-bind="$attrs"
     @register="register"
-    title="更换款式"
+    title="款式换绑"
     :maskClosable="false"
     :confirmLoading="loading"
     @cancel="onModalClose"
