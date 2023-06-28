@@ -59,13 +59,15 @@
         </template>
       </template>
       <template #toolbar>
-        <div :v-show="false">
+        <!-- 平时隐藏上传按钮，通过其他按钮来控制显示 -->
+        <div v-show="false">
           <BasicUpload
-            ref="upload"
-            :maxSize="20"
-            :maxNumber="10"
+            ref="singleUpload"
+            :maxSize="5"
+            :maxNumber="1"
             @change="handleChange"
-            :api="uploadApi"
+            :api="uploadCodeImg"
+            :uploadParams="codeImgParam"
             class="my-5"
             :accept="['image/*']"
         /></div>
@@ -93,11 +95,14 @@
   import { PageWrapper } from '@/components/Page'
   import { getProdCodeList, getProdCodeById } from '@/api/productManage/productCode'
   import { getProdClassTree } from '@/api/productManage/productParam'
+  import { uploadCodeImg } from '@/api/productManage/productPlus'
 
-  const baseApi = 'https://ims-backend.beyond-itservice.com'
+  const baseApi = 'http://11.15.3.176:9090'
   const searchInfo = reactive<any>({})
   const styleData = ref({})
-  const upload = ref()
+  const singleUpload = ref()
+  const codeImgParam = ref({ id: null })
+  const multiUpload = ref()
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -158,11 +163,14 @@
       }
     })
   }
+  //upload
   function handleUpload(record: any) {
-    upload.value.openUploadModal()
+    codeImgParam.value.id = record.id
+    singleUpload.value.fileList = []
+    singleUpload.value.openUploadModal()
   }
   function handleChange(list: string[]) {
-    createMessage.info(`已上传文件${JSON.stringify(list)}`)
+    reload()
   }
   //modal
   const [register1, { openModal: openCodeModal }] = useModal()

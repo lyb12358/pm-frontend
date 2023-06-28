@@ -1,4 +1,6 @@
 import { defHttp, simpleHttp } from '@/utils/http/axios'
+import { UploadApiResult } from '../sys/model/uploadModel'
+import { UploadFileParams } from '/#/axios'
 import { SearchForm, ResponseBean } from './../model/baseModel'
 
 export const codeExport = (data: SearchForm) =>
@@ -25,3 +27,18 @@ export const recordDetailImage = (params) =>
     url: '/product/detailImage',
     params,
   })
+
+//upload
+
+export function uploadCodeImg(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: ProgressEvent) => void,
+) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: '/basic-api/imageUpload/prodCode',
+      onUploadProgress,
+    },
+    params,
+  )
+}
