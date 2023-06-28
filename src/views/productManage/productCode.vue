@@ -42,7 +42,7 @@
               {
                 label: '下载商品说明书',
                 icon: 'ic:outline-delete-outline',
-                onClick: handleOpen.bind(null, record),
+                onClick: downloadSpec.bind(null, record),
               },
               {
                 label: '更换绑定',
@@ -90,7 +90,7 @@
   import { PageWrapper } from '@/components/Page'
   import { getProdCodeList, getProdCodeById } from '@/api/productManage/productCode'
   import { getProdClassTree } from '@/api/productManage/productParam'
-  import { uploadCodeImg } from '@/api/productManage/productPlus'
+  import { uploadCodeImg, specDownload } from '@/api/productManage/productPlus'
 
   const searchInfo = reactive<any>({})
   const styleData = ref({})
@@ -179,7 +179,7 @@
       canvas.width = image.width
       canvas.height = image.height
       let context = canvas.getContext('2d')
-      context.drawImage(image, 0, 0, image.width, image.height)
+      context?.drawImage(image, 0, 0, image.width, image.height)
       let url = canvas.toDataURL('image/jpeg') //得到图片的base64编码数据'
       let a = document.createElement('a') // 生成一个a元素
       let event = new MouseEvent('click', {
@@ -192,6 +192,28 @@
       a.dispatchEvent(event) // 触发a的单击事件
     }
     image.src = imgsrc
+  }
+  //download specification
+  function downloadSpec(record) {
+    specDownload(record.id).then((response) => {
+      fileDownload(response, record.prodName + '商品说明书.pdf')
+    })
+  }
+  // public method to download file
+  function fileDownload(data, name) {
+    if (!data) {
+      return
+    }
+    let url = window.URL.createObjectURL(new Blob([data]))
+    let link = document.createElement('a')
+    link.style.display = 'none'
+    link.href = url
+    link.setAttribute('download', name)
+    document.body.appendChild(link)
+    link.click()
+    // release url object
+    URL.revokeObjectURL(link.href)
+    document.body.removeChild(link)
   }
   //upload
   function handleUpload(record: any) {

@@ -141,7 +141,7 @@
       canvas.width = image.width
       canvas.height = image.height
       let context = canvas.getContext('2d')
-      context.drawImage(image, 0, 0, image.width, image.height)
+      context?.drawImage(image, 0, 0, image.width, image.height)
       let url = canvas.toDataURL('image/jpeg') //得到图片的base64编码数据'
       let a = document.createElement('a') // 生成一个a元素
       let event = new MouseEvent('click', {
