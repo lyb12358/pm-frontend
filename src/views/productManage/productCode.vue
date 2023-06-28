@@ -45,9 +45,9 @@
                 onClick: downloadSpec.bind(null, record),
               },
               {
-                label: '更换绑定',
+                label: '更换款式绑定',
                 icon: 'ic:outline-delete-outline',
-                onClick: handleOpen.bind(null, record),
+                onClick: switchBind.bind(null, record),
               },
             ]"
           />
@@ -73,6 +73,7 @@
     </BasicTable>
     <CodeFormModal1 @register="register1" @is-reload="isReload" :styleData="styleData" />
     <CodeFormModal2 @register="register2" @check="addCode" />
+    <SwitchBindModal @register="register3" @is-reload="isReload" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
@@ -84,6 +85,7 @@
   import { uploadApi } from '@/api/sys/upload'
   import CodeFormModal1 from './component/CodeFormModal1.vue'
   import CodeFormModal2 from './component/CodeFormModal2.vue'
+  import SwitchBindModal from './component/SwitchBindModal.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
   import { baseApi, getProdCodeColumns, getProdCodeFormConfig } from './moduleData'
@@ -224,12 +226,15 @@
   function handleChange(list: string[]) {
     reload()
   }
+  //switch bind
+  function switchBind(record: any) {
+    openSwitchBindModal(true, record)
+  }
   //modal
   const [register1, { openModal: openCodeModal }] = useModal()
   const [register2, { openModal: openSearchStyleModal }] = useModal()
-  function handleOpen(record: any) {
-    console.log('点击了启用', record)
-  }
+  const [register3, { openModal: openSwitchBindModal }] = useModal()
+
   onMounted(async () => {
     getForm().updateSchema({
       field: `prodClass`,

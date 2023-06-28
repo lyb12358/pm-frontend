@@ -26,7 +26,7 @@ export const updateProdCode = (data, thirdFlag) =>
   })
 export const switchBind = (oldId, newId, codeId) =>
   simpleHttp.put<ResponseBean<any>>({
-    url: `/prodCode/styleId/${oldId}/${newId}/${codeId}`,
+    url: `/prodCodes/styleId/${oldId}/${newId}/${codeId}`,
   })
 //计数
 export const codeCount = () =>

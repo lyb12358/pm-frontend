@@ -2,7 +2,7 @@
   <BasicModal
     v-bind="$attrs"
     @register="register"
-    title="新建"
+    title="更换款式"
     :maskClosable="false"
     :confirmLoading="loading"
     @cancel="onModalClose"
@@ -19,14 +19,17 @@
   import { BasicModal, useModalInner } from '@/components/Modal'
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index'
   import { getProdStyleByProdStyle } from '@/api/productManage/productStyle'
+  import { switchBind } from '@/api/productManage/productCode'
 
   const { createMessage } = useMessage()
 
   const { info, success, warning, error } = createMessage
 
-  const emit = defineEmits(['check', 'register'])
+  const emit = defineEmits(['isReload', 'register'])
   const modelRef = ref({})
   const loading = ref(false)
+  const id = ref()
+  const styleId = ref()
   const schemas: FormSchema[] = [
     {
       field: 'prodStyle',
@@ -47,7 +50,9 @@
     showActionButtonGroup: false,
   })
 
-  const [register, { closeModal }] = useModalInner()
+  const [register, { closeModal }] = useModalInner((data) => {
+    data && onDataReceive(data)
+  })
 
   function onModalClose() {
     resetFields()
@@ -55,12 +60,28 @@
   function onOk() {
     submit()
   }
+  function onDataReceive(data) {
+    data.styleId ? (styleId.value = data.styleId) : (styleId.value = data.id)
+    data.styleId ? (id.value = data.id) : (id.value = 0)
+  }
   function handleSubmit(values) {
     getProdStyleByProdStyle(values.prodStyle).then((data) => {
       if (data.code == 20000) {
-        closeModal()
-        onModalClose()
-        emit('check', data.data)
+        if (data.data.id == styleId.value) {
+          warning('请填写一个和当前商品不同的款式')
+          loading.value = false
+          return
+        }
+        switchBind(styleId.value, data.data.id, id.value).then((data) => {
+          if (data.code == 20000) {
+            closeModal()
+            onModalClose()
+            emit('isReload', true)
+          } else {
+            error(data.msg)
+          }
+          loading.value = false
+        })
       } else {
         error(data.msg)
       }
