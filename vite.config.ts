@@ -18,7 +18,7 @@ export default defineApplicationConfig({
       port: 3100,
       proxy: {
         '/basic-api': {
-          target: 'http://11.15.3.176:9090',
+          target: 'https://map.beyond-itcenter.com/pm_backend',
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp(`^/basic-api`), ''),

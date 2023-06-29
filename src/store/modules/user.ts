@@ -82,21 +82,36 @@ export const useUserStore = defineStore({
     /**
      * @description: login
      */
-    async login(
-      params: LoginParams & {
-        goHome?: boolean
-        mode?: ErrorMessageMode
-      },
-    ): Promise<GetUserInfoModel | null> {
+    async login(): // params: LoginParams & {
+    //   goHome?: boolean
+    //   mode?: ErrorMessageMode
+    // },
+    Promise<GetUserInfoModel | null> {
       try {
-        const { goHome = true, mode, ...loginParams } = params
-        const data = await loginApi(loginParams, mode)
-        //console.log(data)
+        //const { goHome = true, mode, ...loginParams } = params
+        //const data = await loginApi(loginParams, mode)
+        //FIXME 免登陆
+        const data = {
+          userId: '1',
+          username: 'admin',
+          realName: '管理员',
+          avatar: '',
+          desc: 'manager',
+          password: '123456',
+          token: 'fakeToken1',
+          //homePath: '/dashboard/analysis',
+          roles: [
+            {
+              roleName: 'Super Admin',
+              value: 'super',
+            },
+          ],
+        }
         const { token } = data
 
         // save token
         this.setToken(token)
-        return this.afterLoginAction(goHome)
+        return this.afterLoginAction(true)
       } catch (error) {
         return Promise.reject(error)
       }
@@ -125,7 +140,24 @@ export const useUserStore = defineStore({
     },
     async getUserInfoAction(): Promise<UserInfo | null> {
       if (!this.getToken) return null
-      const userInfo = await getUserInfo()
+      //const userInfo = await getUserInfo()
+      //FIXME 免登陆
+      const userInfo = {
+        userId: '1',
+        username: 'admin',
+        realName: '管理员',
+        avatar: '',
+        desc: 'manager',
+        password: '123456',
+        token: 'fakeToken1',
+        //homePath: '/dashboard/analysis',
+        roles: [
+          {
+            roleName: 'Super Admin',
+            value: 'super',
+          },
+        ],
+      }
       const { roles = [] } = userInfo
       if (isArray(roles)) {
         const roleList = roles.map((item) => item.value) as RoleEnum[]
