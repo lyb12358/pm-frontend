@@ -76,7 +76,7 @@
     values.prodClass[4] && (values.smallType = values.prodClass[4])
     if (modalStatus.value) {
       updateMat(values).then((data) => {
-        if (data.code == 20000) {
+        if (data.code == 200) {
           success(data.msg)
           closeModal()
           onModalClose()
@@ -92,7 +92,7 @@
       values.status = 1
       values.isSync = 1
       addMat(values).then((data) => {
-        if (data.code == 20000) {
+        if (data.code == 200) {
           success(data.msg)
           closeModal()
           onModalClose()

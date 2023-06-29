@@ -137,7 +137,7 @@
   }
   function updateStyle(record: any) {
     getProdStyleById(record.id).then((data) => {
-      if (data.code == 20000) {
+      if (data.code == 200) {
         openStyleModal(true, data.data)
       } else {
         error(data.msg)
@@ -146,7 +146,7 @@
   }
   function addCode(record: any) {
     getProdStyleById(record.id).then((data) => {
-      if (data.code == 20000) {
+      if (data.code == 200) {
         styleData.value = data.data
         openCodeModal(true)
       } else {

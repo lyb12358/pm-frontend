@@ -73,7 +73,7 @@
     values.prodClass[3] && (values.middleType = values.prodClass[3])
     if (modalStatus.value) {
       updateProdStyle(values).then((data) => {
-        if (data.code == 20000) {
+        if (data.code == 200) {
           success(data.msg)
           closeModal()
           onModalClose()
@@ -89,7 +89,7 @@
       values.status = 1
       values.isSync = 1
       addProdStyle(values).then((data) => {
-        if (data.code == 20000) {
+        if (data.code == 200) {
           success(data.msg)
           closeModal()
           onModalClose()

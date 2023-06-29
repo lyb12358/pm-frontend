@@ -121,7 +121,7 @@
   }
   function updateMat(record: any) {
     getMatById(record.id).then((data) => {
-      if (data.code == 20000) {
+      if (data.code == 200) {
         openModal1(true, data.data)
       } else {
         error(data.msg)

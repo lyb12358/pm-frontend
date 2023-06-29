@@ -80,7 +80,7 @@
     loading.value = true
     if (modalStatus.value) {
       updateProdCode(values, false).then((data) => {
-        if (data.code == 20000) {
+        if (data.code == 200) {
           success(data.msg)
           closeModal()
           onModalClose()
@@ -96,7 +96,7 @@
       values.status = 1
       values.isSync = 1
       addProdCode(values, values.isThird).then((data) => {
-        if (data.code == 20000) {
+        if (data.code == 200) {
           success(data.msg)
           closeModal()
           onModalClose()

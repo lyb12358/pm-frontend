@@ -57,7 +57,7 @@
   }
   function handleSubmit(values) {
     getProdStyleByProdStyle(values.prodStyle).then((data) => {
-      if (data.code == 20000) {
+      if (data.code == 200) {
         closeModal()
         onModalClose()
         emit('check', data.data)

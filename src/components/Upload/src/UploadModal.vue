@@ -194,7 +194,7 @@
           )
           const { data } = ret
           //貌似没走统一的返回处理，所以只能临时处理下code
-          if (data.code != 20000) {
+          if (data.code != 200) {
             createMessage.error(data.msg)
             item.status = UploadResultStatus.ERROR
             return {

@@ -66,14 +66,14 @@
   }
   function handleSubmit(values) {
     getProdStyleByProdStyle(values.prodStyle).then((data) => {
-      if (data.code == 20000) {
+      if (data.code == 200) {
         if (data.data.id == styleId.value) {
           warning('请填写一个和当前商品不同的款式')
           loading.value = false
           return
         }
         switchBind(styleId.value, data.data.id, id.value).then((data) => {
-          if (data.code == 20000) {
+          if (data.code == 200) {
             closeModal()
             onModalClose()
             emit('isReload', true)

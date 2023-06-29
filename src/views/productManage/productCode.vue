@@ -146,7 +146,7 @@
   }
   function updateCode(record: any) {
     getProdCodeById(record.id).then((data) => {
-      if (data.code == 20000) {
+      if (data.code == 200) {
         styleData.value = data.data
         openCodeModal(true, data.data)
       } else {
@@ -160,7 +160,7 @@
   }
   function addBrotherCode(record: any) {
     getProdCodeById(record.id).then((data) => {
-      if (data.code == 20000) {
+      if (data.code == 200) {
         styleData.value = data.data
         openCodeModal(true)
       } else {
