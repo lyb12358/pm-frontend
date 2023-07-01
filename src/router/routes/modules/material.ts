@@ -10,7 +10,7 @@ const material: AppRouteModule = {
   meta: {
     hideChildrenInMenu: true,
     icon: 'material-symbols:matter',
-    title: '物料管理',
+    title: '物料辅料管理',
     orderNo: 4,
   },
   children: [
@@ -19,7 +19,7 @@ const material: AppRouteModule = {
       name: 'matPage',
       component: () => import('@/views/productManage/material.vue'),
       meta: {
-        title: '物料管理',
+        title: '物料辅料管理',
         icon: 'material-symbols:matter',
         hideMenu: true,
       },
