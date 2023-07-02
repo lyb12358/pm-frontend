@@ -3,7 +3,7 @@ import { SearchForm, ResponseBean } from './../model/baseModel'
 
 export const getMaterialList = (data: SearchForm) =>
   defHttp.post<ResponseBean<any>>({
-    url: '/mats',
+    url: '/pm/mats',
     data,
     headers: {
       // @ts-ignore
@@ -12,20 +12,20 @@ export const getMaterialList = (data: SearchForm) =>
   })
 export const getMatById = (params) =>
   defHttp.get<ResponseBean<any>>({
-    url: `/mat/id/${params.id}`,
+    url: `/pm/mat/id/${params.id}`,
   })
 export const addMat = (data) =>
   simpleHttp.post<ResponseBean<any>>({
-    url: '/mat',
+    url: '/pm/mat',
     data,
   })
 export const updateMat = (data) =>
   simpleHttp.put<ResponseBean<any>>({
-    url: '/mat',
+    url: '/pm/mat',
     data,
   })
 //计数
 export const matCount = () =>
   defHttp.get<ResponseBean<any>>({
-    url: '/mat/count',
+    url: '/pm/mat/count',
   })

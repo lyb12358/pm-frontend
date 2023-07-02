@@ -12,6 +12,7 @@ import { useMessage } from '/@/hooks/web/useMessage'
 import { RequestEnum, ResultEnum, ContentTypeEnum } from '/@/enums/httpEnum'
 import { isString, isUnDef, isNull, isEmpty } from '/@/utils/is'
 import { getToken } from '/@/utils/auth'
+//import { getToken } from '/@/utils/auth/cookieToken'
 import { setObjToUrlParams, deepMerge } from '/@/utils'
 import { useErrorLogStoreWithOut } from '/@/store/modules/errorLog'
 import { useI18n } from '/@/hooks/web/useI18n'
@@ -73,11 +74,14 @@ const transform: AxiosTransform = {
     // 在此处根据自己项目的实际情况对不同的code执行不同的操作
     // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
     let timeoutMsg = ''
+    console.log(code)
     switch (code) {
       case ResultEnum.TIMEOUT:
+      case ResultEnum.FORBIDDEN:
+      case -1:
         timeoutMsg = t('sys.api.timeoutMessage')
         const userStore = useUserStoreWithOut()
-        userStore.setToken(undefined)
+        console.log(4)
         userStore.logout(true)
         break
       default:
@@ -155,13 +159,17 @@ const transform: AxiosTransform = {
    */
   requestInterceptors: (config, options) => {
     // 请求之前处理config
-    const token = getToken()
+    const userStore = useUserStoreWithOut()
+    const token = userStore.getToken
     if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
       // jwt token
-      ;(config as Recordable).headers.Authorization = options.authenticationScheme
-        ? `${options.authenticationScheme} ${token}`
-        : token
+      // ;(config as Recordable).headers.Authorization = options.authenticationScheme
+      //   ? `${options.authenticationScheme} ${token}`
+      //   : token
+      config.headers['x-token'] = token
     }
+    //FIXME 检查cookie和localstorage的token，串号登录时强制登出
+    config.headers['systemCode'] = userStore.getSystem
     return config
   },
 
@@ -230,11 +238,12 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
         // authentication schemes，e.g: Bearer
         // authenticationScheme: 'Bearer',
-        authenticationScheme: '',
+        authenticationScheme: 'x-token',
         timeout: 10 * 1000,
+        //跨域是否带上cookie
+        withCredentials: true,
         // 基础接口地址
         // baseURL: globSetting.apiUrl,
-
         headers: { 'Content-Type': ContentTypeEnum.JSON },
         // 如果是form-data格式
         // headers: { 'Content-Type': ContentTypeEnum.FORM_URLENCODED },
@@ -242,6 +251,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         transform: clone(transform),
         // 配置项，下面的选项都可以在独立的接口请求中覆盖
         requestOptions: {
+          withCredentials: true,
           // 默认将prefix 添加到url
           joinPrefix: true,
           // 是否返回原生响应头 比如：需要获取响应头时使用该属性
@@ -266,7 +276,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           withToken: true,
           retryRequest: {
             isOpenRetry: true,
-            count: 5,
+            count: 3,
             waitTime: 100,
           },
         },

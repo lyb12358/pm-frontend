@@ -4,10 +4,12 @@ import { defineStore } from 'pinia'
 import { store } from '/@/store'
 import { RoleEnum } from '/@/enums/roleEnum'
 import { PageEnum } from '/@/enums/pageEnum'
-import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '/@/enums/cacheEnum'
+import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY, PERMISSION_LIST_KEY } from '/@/enums/cacheEnum'
 import { getAuthCache, setAuthCache } from '/@/utils/auth'
+import { getCookieToken, setCookieToken } from '/@/utils/auth/cookieToken'
 import { GetUserInfoModel, LoginParams } from '/@/api/sys/model/userModel'
-import { doLogout, getUserInfo, loginApi } from '/@/api/sys/user'
+//import { doLogout, getUserInfo, loginApi } from '/@/api/sys/user'
+import { getAuth, getUserInfo, getMenuList, getUsercenterLogout } from '@/api/usercenter'
 import { useI18n } from '/@/hooks/web/useI18n'
 import { useMessage } from '/@/hooks/web/useMessage'
 import { router } from '/@/router'
@@ -16,13 +18,18 @@ import { RouteRecordRaw } from 'vue-router'
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic'
 import { isArray } from '/@/utils/is'
 import { h } from 'vue'
+import { useGlobSetting } from '/@/hooks/setting'
 
+const { apiUrl } = useGlobSetting()
 interface UserState {
   userInfo: Nullable<UserInfo>
   token?: string
   roleList: RoleEnum[]
   sessionTimeout?: boolean
   lastUpdateTime: number
+  //pm
+  system: string
+  permissionList: []
 }
 
 export const useUserStore = defineStore({
@@ -38,13 +45,16 @@ export const useUserStore = defineStore({
     sessionTimeout: false,
     // Last fetch time
     lastUpdateTime: 0,
+    //pm
+    system: 'pm',
+    permissionList: [],
   }),
   getters: {
     getUserInfo(state): UserInfo {
       return state.userInfo || getAuthCache<UserInfo>(USER_INFO_KEY) || {}
     },
     getToken(state): string {
-      return state.token || getAuthCache<string>(TOKEN_KEY)
+      return state.token || getAuthCache<string>(TOKEN_KEY) || getCookieToken()
     },
     getRoleList(state): RoleEnum[] {
       return state.roleList.length > 0 ? state.roleList : getAuthCache<RoleEnum[]>(ROLES_KEY)
@@ -55,11 +65,20 @@ export const useUserStore = defineStore({
     getLastUpdateTime(state): number {
       return state.lastUpdateTime
     },
+    getPermissionList(state): [] {
+      return state.permissionList.length > 0
+        ? state.permissionList
+        : getAuthCache<[]>(PERMISSION_LIST_KEY)
+    },
+    getSystem(state): string {
+      return state.system
+    },
   },
   actions: {
     setToken(info: string | undefined) {
       this.token = info ? info : '' // for null or undefined value
       setAuthCache(TOKEN_KEY, info)
+      setCookieToken(info)
     },
     setRoleList(roleList: RoleEnum[]) {
       this.roleList = roleList
@@ -70,6 +89,10 @@ export const useUserStore = defineStore({
       this.lastUpdateTime = new Date().getTime()
       setAuthCache(USER_INFO_KEY, info)
     },
+    setPermissionList(info: []) {
+      this.permissionList = info
+      setAuthCache(PERMISSION_LIST_KEY, info)
+    },
     setSessionTimeout(flag: boolean) {
       this.sessionTimeout = flag
     },
@@ -77,37 +100,15 @@ export const useUserStore = defineStore({
       this.userInfo = null
       this.token = ''
       this.roleList = []
+      this.permissionList = []
       this.sessionTimeout = false
     },
     /**
      * @description: login
      */
-    async login(): // params: LoginParams & {
-    //   goHome?: boolean
-    //   mode?: ErrorMessageMode
-    // },
-    Promise<GetUserInfoModel | null> {
+    async login(): Promise<GetUserInfoModel | null> {
       try {
-        //const { goHome = true, mode, ...loginParams } = params
-        //const data = await loginApi(loginParams, mode)
-        //FIXME 免登陆
-        const data = {
-          userId: '1',
-          username: 'admin',
-          realName: '管理员',
-          avatar: '',
-          desc: 'manager',
-          password: '123456',
-          token: 'fakeToken1',
-          //homePath: '/dashboard/analysis',
-          roles: [
-            {
-              roleName: 'Super Admin',
-              value: 'super',
-            },
-          ],
-        }
-        const { token } = data
+        const token = await getAuth()
 
         // save token
         this.setToken(token)
@@ -140,32 +141,32 @@ export const useUserStore = defineStore({
     },
     async getUserInfoAction(): Promise<UserInfo | null> {
       if (!this.getToken) return null
-      //const userInfo = await getUserInfo()
+      const userInfo = await getUserInfo({ systemCode: this.getSystem })
       //FIXME 免登陆
-      const userInfo = {
-        userId: '1',
-        username: 'admin',
-        realName: '管理员',
-        avatar: '',
-        desc: 'manager',
-        password: '123456',
-        token: 'fakeToken1',
-        //homePath: '/dashboard/analysis',
-        roles: [
-          {
-            roleName: 'Super Admin',
-            value: 'super',
-          },
-        ],
-      }
-      const { roles = [] } = userInfo
-      if (isArray(roles)) {
-        const roleList = roles.map((item) => item.value) as RoleEnum[]
-        this.setRoleList(roleList)
-      } else {
-        userInfo.roles = []
-        this.setRoleList([])
-      }
+      // const userInfo = {
+      //   userId: '1',
+      //   username: 'admin',
+      //   realName: '管理员',
+      //   avatar: '',
+      //   desc: 'manager',
+      //   password: '123456',
+      //   token: 'fakeToken1',
+      //   //homePath: '/dashboard/analysis',
+      //   roles: [
+      //     {
+      //       roleName: 'Super Admin',
+      //       value: 'super',
+      //     },
+      //   ],
+      // }
+      // const { roles = [] } = userInfo
+      // if (isArray(roles)) {
+      //   const roleList = roles.map((item) => item.value) as RoleEnum[]
+      //   this.setRoleList(roleList)
+      // } else {
+      //   userInfo.roles = []
+      //   this.setRoleList([])
+      // }
       this.setUserInfo(userInfo)
       return userInfo
     },
@@ -175,7 +176,7 @@ export const useUserStore = defineStore({
     async logout(goLogin = false) {
       if (this.getToken) {
         try {
-          await doLogout()
+          await getUsercenterLogout()
         } catch {
           console.log('注销Token失败')
         }
@@ -183,7 +184,7 @@ export const useUserStore = defineStore({
       this.setToken(undefined)
       this.setSessionTimeout(false)
       this.setUserInfo(null)
-      goLogin && router.push(PageEnum.BASE_LOGIN)
+      goLogin && window.open(apiUrl.split('/usercenter')[0] + '/uums/login', '_self')
     },
 
     /**

@@ -2,29 +2,32 @@ import { defHttp, simpleHttp } from '@/utils/http/axios'
 import { UploadApiResult } from '../sys/model/uploadModel'
 import { UploadFileParams } from '/#/axios'
 import { SearchForm, ResponseBean } from './../model/baseModel'
+import { useGlobSetting } from '/@/hooks/setting'
+
+const { apiUrl } = useGlobSetting()
 
 export const codeExport = (data: SearchForm) =>
   simpleHttp.post<ResponseBean<any>>({
-    url: '/excel/prodCodes',
+    url: '/pm/excel/prodCodes',
     data,
     responseType: 'blob',
   })
 
 export const specDownload = (id) =>
   simpleHttp.get<ResponseBean<any>>({
-    url: `/whiteApi/specs/${id}`,
+    url: `/pm/whiteApi/specs/${id}`,
     responseType: 'blob',
   })
 
 export const importModelDownload = (name) =>
   simpleHttp.get<ResponseBean<any>>({
-    url: `/importModel/${name}`,
+    url: `/pm/importModel/${name}`,
     responseType: 'blob',
   })
 
 export const recordDetailImage = (params) =>
   simpleHttp.post<ResponseBean<any>>({
-    url: '/product/detailImage',
+    url: '/pm/product/detailImage',
     params,
   })
 
@@ -36,7 +39,7 @@ export function uploadCodeImg(
 ) {
   return defHttp.uploadFile<UploadApiResult>(
     {
-      url: '/basic-api/imageUpload/prodCode',
+      url: apiUrl + '/pm/imageUpload/prodCode',
       onUploadProgress,
     },
     params,
@@ -48,7 +51,7 @@ export function uploadStyleImg(
 ) {
   return defHttp.uploadFile<UploadApiResult>(
     {
-      url: '/basic-api/imageUpload/prodStyle',
+      url: apiUrl + '/pm/imageUpload/prodStyle',
       onUploadProgress,
     },
     params,
@@ -60,7 +63,7 @@ export function uploadMatImg(
 ) {
   return defHttp.uploadFile<UploadApiResult>(
     {
-      url: '/basic-api/imageUpload/mat',
+      url: apiUrl + '/pm/imageUpload/mat',
       onUploadProgress,
     },
     params,

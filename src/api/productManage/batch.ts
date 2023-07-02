@@ -3,19 +3,19 @@ import { SearchForm, ResponseBean } from './../model/baseModel'
 
 export const getProdStyleList = (data: SearchForm) =>
   defHttp.post<ResponseBean<any>>({
-    url: '/prodStyles',
+    url: '/pm/prodStyles',
     data,
   })
 export const getBatchLogList = (data: SearchForm) =>
   defHttp.post<ResponseBean<any>>({
-    url: '/batchLogs',
+    url: '/pm/batchLogs',
     data,
   })
 export const addMatBatchDataSync = (params) =>
   defHttp.post<ResponseBean<any>>({
-    url: `/batch/sync/mat/${params.id}`,
+    url: `/pm/batch/sync/mat/${params.id}`,
   })
 export const addProdBatchDataSync = (params) =>
   defHttp.post<ResponseBean<any>>({
-    url: `/batch/sync/prod/${params.id}`,
+    url: `/pm/batch/sync/prod/${params.id}`,
   })

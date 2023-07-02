@@ -4,11 +4,13 @@ import { usePermissionStoreWithOut } from '/@/store/modules/permission'
 
 import { PageEnum } from '/@/enums/pageEnum'
 import { useUserStoreWithOut } from '/@/store/modules/user'
-
+import { getCookieToken } from '/@/utils/auth/cookieToken'
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic'
 
 import { RootRoute } from '/@/router/routes'
+import { useGlobSetting } from '/@/hooks/setting'
 
+const { apiUrl } = useGlobSetting()
 const LOGIN_PATH = PageEnum.BASE_LOGIN
 
 const ROOT_PATH = RootRoute.path
@@ -68,9 +70,10 @@ export function createPermissionGuard(router: Router) {
       //   }
       // }
       // next(redirectData)
-      //FIXME 免登陆
+      console.log(1)
       await userStore.login()
-      next()
+      console.log(2)
+      next('/')
       return
     }
 
@@ -87,6 +90,7 @@ export function createPermissionGuard(router: Router) {
     // get userinfo while last fetch time is empty
     if (userStore.getLastUpdateTime === 0) {
       try {
+        console.log(3)
         await userStore.getUserInfoAction()
       } catch (err) {
         next()
