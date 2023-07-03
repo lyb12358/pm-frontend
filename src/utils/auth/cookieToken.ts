@@ -13,7 +13,8 @@ export function removeCookieToken() {
 }
 export const getCookie = (TokenKey: string) => {
   const value = Cookies.get(TokenKey)
-  if (value) return value
+  //FIXME 返回undefined被转换成string，导致boolean判断出错
+  if (value && value != 'undefined') return value
   else return false
 }
 

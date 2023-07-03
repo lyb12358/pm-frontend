@@ -106,14 +106,14 @@
   })
 
   function checkPreviewImg({ id, thumbnail }: any) {
-    if (!(thumbnail === null) && !(thumbnail === '')) {
-      return [baseApi + '/image/mat/' + id + '/' + thumbnail]
+    if (!(thumbnail === null) && !(thumbnail === '') && !(thumbnail === undefined)) {
+      return [baseApi + '/image/style/' + id + '/' + thumbnail]
     } else {
       return [noImage]
     }
   }
   function checkImg({ id, image }: any) {
-    if (!(image === null) && !(image === '')) {
+    if (!(image === null) && !(image === '') && !(image === undefined)) {
       return [baseApi + '/image/style/' + id + '/' + image]
     } else {
       return [noImage]

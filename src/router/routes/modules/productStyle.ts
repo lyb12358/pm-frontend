@@ -12,6 +12,7 @@ const productStyle: AppRouteModule = {
     icon: 'fluent-mdl2:product-release',
     title: '商品款式管理',
     orderNo: 3,
+    permission: 'productStyle',
   },
   children: [
     {

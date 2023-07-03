@@ -12,6 +12,7 @@ const productAnalysis: AppRouteModule = {
     icon: 'icon-park-solid:analysis',
     title: '分析管理',
     orderNo: 7,
+    permission: 'productAnalysis',
   },
   children: [
     {

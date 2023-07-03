@@ -4,7 +4,13 @@ import { defineStore } from 'pinia'
 import { store } from '/@/store'
 import { RoleEnum } from '/@/enums/roleEnum'
 import { PageEnum } from '/@/enums/pageEnum'
-import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY, PERMISSION_LIST_KEY } from '/@/enums/cacheEnum'
+import {
+  ROLES_KEY,
+  TOKEN_KEY,
+  USER_INFO_KEY,
+  MENU_LIST_KEY,
+  OPERATION_LIST_KEY,
+} from '/@/enums/cacheEnum'
 import { getAuthCache, setAuthCache } from '/@/utils/auth'
 import { getCookieToken, setCookieToken } from '/@/utils/auth/cookieToken'
 import { GetUserInfoModel, LoginParams } from '/@/api/sys/model/userModel'
@@ -29,7 +35,8 @@ interface UserState {
   lastUpdateTime: number
   //pm
   system: string
-  permissionList: []
+  menus: []
+  operations: []
 }
 
 export const useUserStore = defineStore({
@@ -47,14 +54,15 @@ export const useUserStore = defineStore({
     lastUpdateTime: 0,
     //pm
     system: 'pm',
-    permissionList: [],
+    menus: [],
+    operations: [],
   }),
   getters: {
     getUserInfo(state): UserInfo {
       return state.userInfo || getAuthCache<UserInfo>(USER_INFO_KEY) || {}
     },
     getToken(state): string {
-      return state.token || getAuthCache<string>(TOKEN_KEY) || getCookieToken()
+      return state.token || getCookieToken()
     },
     getRoleList(state): RoleEnum[] {
       return state.roleList.length > 0 ? state.roleList : getAuthCache<RoleEnum[]>(ROLES_KEY)
@@ -65,10 +73,11 @@ export const useUserStore = defineStore({
     getLastUpdateTime(state): number {
       return state.lastUpdateTime
     },
-    getPermissionList(state): [] {
-      return state.permissionList.length > 0
-        ? state.permissionList
-        : getAuthCache<[]>(PERMISSION_LIST_KEY)
+    getMenus(state): [] {
+      return state.menus.length > 0 ? state.menus : getAuthCache<[]>(MENU_LIST_KEY)
+    },
+    getOperations(state): [] {
+      return state.operations.length > 0 ? state.operations : getAuthCache<[]>(OPERATION_LIST_KEY)
     },
     getSystem(state): string {
       return state.system
@@ -77,7 +86,7 @@ export const useUserStore = defineStore({
   actions: {
     setToken(info: string | undefined) {
       this.token = info ? info : '' // for null or undefined value
-      setAuthCache(TOKEN_KEY, info)
+      //setAuthCache(TOKEN_KEY, info)
       setCookieToken(info)
     },
     setRoleList(roleList: RoleEnum[]) {
@@ -89,9 +98,13 @@ export const useUserStore = defineStore({
       this.lastUpdateTime = new Date().getTime()
       setAuthCache(USER_INFO_KEY, info)
     },
-    setPermissionList(info: []) {
-      this.permissionList = info
-      setAuthCache(PERMISSION_LIST_KEY, info)
+    setMenus(info: []) {
+      this.menus = info
+      setAuthCache(MENU_LIST_KEY, info)
+    },
+    setOperations(info: []) {
+      this.operations = info
+      setAuthCache(OPERATION_LIST_KEY, info)
     },
     setSessionTimeout(flag: boolean) {
       this.sessionTimeout = flag
@@ -100,7 +113,8 @@ export const useUserStore = defineStore({
       this.userInfo = null
       this.token = ''
       this.roleList = []
-      this.permissionList = []
+      this.menus = []
+      this.operations = []
       this.sessionTimeout = false
     },
     /**
@@ -168,6 +182,16 @@ export const useUserStore = defineStore({
       //   this.setRoleList([])
       // }
       this.setUserInfo(userInfo)
+      //FIXME 现在默认只传博洋家纺的brandId
+      const permissionList = await getMenuList({ systemCode: this.getSystem, brandId: 1 })
+      const menuList = permissionList.menus.map(function (item) {
+        return item.path
+      })
+      this.setMenus(menuList)
+      const oprationList = permissionList.operations.map(function (item) {
+        return item.operationType
+      })
+      this.setOperations(oprationList)
       return userInfo
     },
     /**
@@ -184,6 +208,8 @@ export const useUserStore = defineStore({
       this.setToken(undefined)
       this.setSessionTimeout(false)
       this.setUserInfo(null)
+      this.setMenus([])
+      this.setOperations([])
       goLogin && window.open(apiUrl.split('/usercenter')[0] + '/uums/login', '_self')
     },
 

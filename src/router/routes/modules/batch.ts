@@ -12,6 +12,7 @@ const batch: AppRouteModule = {
     icon: 'carbon:batch-job',
     title: '批量操作',
     orderNo: 6,
+    permission: 'batch',
   },
   children: [
     {

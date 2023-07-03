@@ -12,6 +12,7 @@ const productCat: AppRouteModule = {
     icon: 'ri:node-tree',
     title: '类别管理',
     orderNo: 5,
+    permission: 'productCat',
   },
   children: [
     {

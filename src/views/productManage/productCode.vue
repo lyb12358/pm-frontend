@@ -127,18 +127,22 @@
   })
 
   function checkPreviewImg({ id, styleId, codeThumbnail, styleThumbnail }: any) {
-    if (!(codeThumbnail === null) && !(codeThumbnail === '')) {
+    if (!(codeThumbnail === null) && !(codeThumbnail === '') && !(codeThumbnail === undefined)) {
       return [baseApi + '/image/code/' + id + '/' + codeThumbnail]
-    } else if (!(styleThumbnail === null) && !(styleThumbnail === '')) {
+    } else if (
+      !(styleThumbnail === null) &&
+      !(styleThumbnail === '') &&
+      !(styleThumbnail === undefined)
+    ) {
       return [baseApi + '/image/style/' + styleId + '/' + styleThumbnail]
     } else {
       return [noImage]
     }
   }
   function checkImg({ id, styleId, codeImage, styleImage }: any) {
-    if (!(codeImage === null) && !(codeImage === '')) {
+    if (!(codeImage === null) && !(codeImage === '') && !(codeImage === undefined)) {
       return [baseApi + '/image/code/' + id + '/' + codeImage]
-    } else if (!(styleImage === null) && !(styleImage === '')) {
+    } else if (!(styleImage === null) && !(styleImage === '') && !(styleImage === undefined)) {
       return [baseApi + '/image/style/' + styleId + '/' + styleImage]
     } else {
       return [noImage]

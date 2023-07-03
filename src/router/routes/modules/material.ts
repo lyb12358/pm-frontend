@@ -12,6 +12,7 @@ const material: AppRouteModule = {
     icon: 'material-symbols:matter',
     title: '物料辅料管理',
     orderNo: 4,
+    permission: 'material',
   },
   children: [
     {

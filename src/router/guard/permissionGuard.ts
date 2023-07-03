@@ -34,10 +34,12 @@ export function createPermissionGuard(router: Router) {
     }
 
     const token = userStore.getToken
+
     // console.log(token)
     // console.log(!token)
     // console.log(Boolean(getAuthCache<string>(TOKEN_KEY)))
     // console.log(Boolean(getCookieToken))
+
     // Whitelist can be directly entered
     if (whitePathList.includes(to.path as PageEnum)) {
       if (to.path === LOGIN_PATH && token) {
@@ -66,7 +68,7 @@ export function createPermissionGuard(router: Router) {
 
       console.log('token does not exist')
       await userStore.login()
-      //next()
+      next()
       return
     }
 

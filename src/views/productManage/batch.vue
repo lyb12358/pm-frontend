@@ -5,7 +5,7 @@
         <template v-if="column.key === 'isSync'">
           <Icon
             :icon="record.isSync ? 'icon-park-solid:check-one' : 'fluent-mdl2:status-error-full'"
-            :color="record.isSync ? 'green' : 'red'"
+            :color="record.isSync ? '#22c55e' : 'red'"
             size="20"
           />
         </template>

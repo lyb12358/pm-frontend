@@ -5,7 +5,7 @@ import { t } from '/@/hooks/web/useI18n'
 
 const about: AppRouteModule = {
   path: '/about',
-  name: 'About',
+  name: 'about',
   component: LAYOUT,
   redirect: '/about/index',
   meta: {
@@ -13,11 +13,12 @@ const about: AppRouteModule = {
     icon: 'simple-icons:about-dot-me',
     title: t('routes.dashboard.about'),
     orderNo: 100000,
+    permission: 'about',
   },
   children: [
     {
       path: 'index',
-      name: 'AboutPage',
+      name: 'aboutPage',
       component: () => import('/@/views/sys/about/index.vue'),
       meta: {
         title: t('routes.dashboard.about'),
