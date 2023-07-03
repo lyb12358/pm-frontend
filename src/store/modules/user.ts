@@ -109,7 +109,7 @@ export const useUserStore = defineStore({
     async login(): Promise<GetUserInfoModel | null> {
       try {
         const token = await getAuth()
-
+        console.log('auth的token=' + token)
         // save token
         this.setToken(token)
         return this.afterLoginAction(true)

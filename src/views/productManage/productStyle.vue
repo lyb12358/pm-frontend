@@ -80,7 +80,7 @@
   import SwitchBindModal from './component/SwitchBindModal.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
-  import { baseApi, getProdStyleColumns, getProdStyleFormConfig } from './moduleData'
+  import { getProdStyleColumns, getProdStyleFormConfig } from './moduleData'
   import { PageWrapper } from '@/components/Page'
   import {
     getProdStyleList,
@@ -89,7 +89,10 @@
   } from '@/api/productManage/productStyle'
   import { getProdClassTreeOnMiddleType } from '@/api/productManage/productParam'
   import { uploadStyleImg } from '@/api/productManage/productPlus'
+  import { useGlobSetting } from '/@/hooks/setting'
 
+  const { apiUrl } = useGlobSetting()
+  const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const styleData = ref({})
   const singleUpload = ref()

@@ -69,12 +69,15 @@
   import MatFormModal1 from './component/MatFormModal1.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
-  import { baseApi, getMaterialColumns, getMaterialFormConfig } from './moduleData'
+  import { getMaterialColumns, getMaterialFormConfig } from './moduleData'
   import { PageWrapper } from '@/components/Page'
   import { getMaterialList, getMatById } from '@/api/productManage/material'
   import { getMatClassTree } from '@/api/productManage/productParam'
   import { uploadMatImg } from '@/api/productManage/productPlus'
+  import { useGlobSetting } from '/@/hooks/setting'
 
+  const { apiUrl } = useGlobSetting()
+  const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const singleUpload = ref()
   const singleImgParam = ref({ id: null })

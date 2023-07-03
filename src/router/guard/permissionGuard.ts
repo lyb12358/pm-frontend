@@ -9,6 +9,8 @@ import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic'
 
 import { RootRoute } from '/@/router/routes'
 import { useGlobSetting } from '/@/hooks/setting'
+import { getAuthCache, setAuthCache } from '/@/utils/auth'
+import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY, PERMISSION_LIST_KEY } from '/@/enums/cacheEnum'
 
 const { apiUrl } = useGlobSetting()
 const LOGIN_PATH = PageEnum.BASE_LOGIN
@@ -32,7 +34,10 @@ export function createPermissionGuard(router: Router) {
     }
 
     const token = userStore.getToken
-
+    // console.log(token)
+    // console.log(!token)
+    // console.log(Boolean(getAuthCache<string>(TOKEN_KEY)))
+    // console.log(Boolean(getCookieToken))
     // Whitelist can be directly entered
     if (whitePathList.includes(to.path as PageEnum)) {
       if (to.path === LOGIN_PATH && token) {
@@ -50,6 +55,7 @@ export function createPermissionGuard(router: Router) {
       next()
       return
     }
+
     // token or user does not exist
     if (!token) {
       // You can access without permission. You need to set the routing meta.ignoreAuth to true
@@ -58,22 +64,9 @@ export function createPermissionGuard(router: Router) {
         return
       }
 
-      // redirect login page
-      // const redirectData: { path: string; replace: boolean; query?: Recordable<string> } = {
-      //   path: LOGIN_PATH,
-      //   replace: true,
-      // }
-      // if (to.path) {
-      //   redirectData.query = {
-      //     ...redirectData.query,
-      //     redirect: to.path,
-      //   }
-      // }
-      // next(redirectData)
-      console.log(1)
+      console.log('token does not exist')
       await userStore.login()
-      console.log(2)
-      next('/')
+      //next()
       return
     }
 
@@ -90,7 +83,7 @@ export function createPermissionGuard(router: Router) {
     // get userinfo while last fetch time is empty
     if (userStore.getLastUpdateTime === 0) {
       try {
-        console.log(3)
+        console.log('get userinfo while last fetch time is empty')
         await userStore.getUserInfoAction()
       } catch (err) {
         next()

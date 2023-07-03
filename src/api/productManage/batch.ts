@@ -1,11 +1,6 @@
 import { defHttp, simpleHttp } from '@/utils/http/axios'
 import { SearchForm, ResponseBean } from './../model/baseModel'
 
-export const getProdStyleList = (data: SearchForm) =>
-  defHttp.post<ResponseBean<any>>({
-    url: '/pm/prodStyles',
-    data,
-  })
 export const getBatchLogList = (data: SearchForm) =>
   defHttp.post<ResponseBean<any>>({
     url: '/pm/batchLogs',

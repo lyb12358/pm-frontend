@@ -18,7 +18,7 @@ export default defineApplicationConfig({
       port: 3100,
       proxy: {
         '/basic-api': {
-          target: 'http://www.beyond-it-service.com/usercenter',
+          target: 'http://localhost:9090',
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp(`^/basic-api`), ''),
