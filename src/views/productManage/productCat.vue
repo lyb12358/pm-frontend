@@ -11,7 +11,9 @@
 <script lang="ts" setup>
   import { Card, CardGrid } from 'ant-design-vue'
   import Icon from '@/components/Icon/Icon.vue'
+  import { usePermission } from './customUtil/usePermission'
 
+  const { hasPermission } = usePermission()
   interface NavItem {
     title: string
     icon: string

@@ -21,19 +21,23 @@
             :dropDownActions="[
               {
                 label: '修改',
-                icon: 'ic:outline-delete-outline',
-                color: 'error',
+                icon: 'icon-park-outline:modify',
                 onClick: updateMat.bind(null, record),
               },
               {
                 label: '上传图片',
-                icon: 'ic:outline-delete-outline',
+                icon: 'fluent:image-add-24-regular',
                 onClick: handleUpload.bind(null, record),
               },
               {
                 label: '下载原图',
-                icon: 'ic:outline-delete-outline',
+                icon: 'uil:image-download',
                 onClick: downloadIamge.bind(null, record),
+              },
+              {
+                label: '查看日志',
+                icon: 'mdi:pencil-box',
+                auth: 'material:log',
               },
             ]"
           />
@@ -52,7 +56,12 @@
             class="my-5"
             :accept="['image/*']"
         /></div>
-        <a-button preIcon="mdi:page-next-outline" type="primary" @click="openModal1">
+        <a-button
+          preIcon="mdi:new-box"
+          type="primary"
+          @click="openModal1"
+          v-show="hasPermission('material:add')"
+        >
           新建
         </a-button>
       </template>
@@ -74,9 +83,11 @@
   import { getMaterialList, getMatById } from '@/api/productManage/material'
   import { getMatClassTree } from '@/api/productManage/productParam'
   import { uploadMatImg } from '@/api/productManage/productPlus'
+  import { usePermission } from './customUtil/usePermission'
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
+  const { hasPermission } = usePermission()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const singleUpload = ref()

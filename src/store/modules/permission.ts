@@ -129,6 +129,7 @@ export const usePermissionStore = defineStore({
       //   console.log(roleList.some((role) => roles.includes(role)))
       //   return roleList.some((role) => roles.includes(role))
       // }
+      //自定义权限
       const routeFilter = (route: AppRouteRecordRaw) => {
         const { meta } = route
         const { permission } = meta || {}

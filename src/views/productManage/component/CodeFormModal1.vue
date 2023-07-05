@@ -36,6 +36,12 @@
     getProdCatOptions,
     getProdSpeOptionsByParent,
   } from '@/api/productManage/productParam'
+  import { useUserStore } from '@/store/modules/user'
+
+  const permissionList: any = useUserStore().getPermissions
+  const columnPermissions = permissionList.operations.filter(
+    (item: any) => item.operationType == 'productCode:update',
+  )[0].columnPermissions
 
   const { createMessage } = useMessage()
 
@@ -193,6 +199,16 @@
       pakSize: data.pakSize,
       remark: data.remark,
     }
+    //hide col when do not have permission
+    columnPermissions &&
+      columnPermissions.forEach((element) => {
+        updateSchema([
+          {
+            field: element.columnName,
+            show: false,
+          },
+        ])
+      })
   }
 
   function handleVisibleChange(v) {

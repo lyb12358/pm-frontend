@@ -5,6 +5,8 @@ export const LOCALE_KEY = 'LOCALE__'
 
 // user info key
 export const USER_INFO_KEY = 'USER__INFO__'
+// permission list key
+export const PERMISSION_LIST_KEY = 'PERMISSION__LIST__'
 // menu list key
 export const MENU_LIST_KEY = 'MENU__LIST__'
 // operation list key

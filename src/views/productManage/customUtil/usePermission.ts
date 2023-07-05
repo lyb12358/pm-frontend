@@ -4,7 +4,7 @@ import { useAppStore } from '/@/store/modules/app'
 import { usePermissionStore } from '/@/store/modules/permission'
 import { useUserStore } from '/@/store/modules/user'
 
-import { useTabs } from './useTabs'
+import { useTabs } from '/@/hooks/web/useTabs'
 
 import { router, resetRouter } from '/@/router'
 // import { RootRoute } from '/@/router/routes';
@@ -62,34 +62,6 @@ export function usePermission() {
     if (!value) {
       return def
     }
-
-    const permMode = projectSetting.permissionMode
-
-    if ([PermissionModeEnum.ROUTE_MAPPING, PermissionModeEnum.ROLE].includes(permMode)) {
-      if (!isArray(value)) {
-        return userStore.getRoleList?.includes(value as RoleEnum)
-      }
-      return (intersection(value, userStore.getRoleList) as RoleEnum[]).length > 0
-    }
-
-    if (PermissionModeEnum.BACK === permMode) {
-      const allCodeList = permissionStore.getPermCodeList as string[]
-      if (!isArray(value)) {
-        return allCodeList.includes(value)
-      }
-      return (intersection(value, allCodeList) as string[]).length > 0
-    }
-    return true
-  }
-
-  function hasCustomPermission(
-    value?: RoleEnum | RoleEnum[] | string | string[],
-    def = true,
-  ): boolean {
-    // Visible by default
-    if (!value) {
-      return def
-    }
     const allCodeList = userStore.getOperations as string[]
     if (!isArray(value)) {
       return allCodeList.includes(value)
@@ -122,5 +94,5 @@ export function usePermission() {
     resume()
   }
 
-  return { changeRole, hasPermission, hasCustomPermission, togglePermissionMode, refreshMenu }
+  return { changeRole, hasPermission, togglePermissionMode, refreshMenu }
 }

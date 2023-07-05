@@ -9,6 +9,7 @@ import {
   TOKEN_KEY,
   USER_INFO_KEY,
   MENU_LIST_KEY,
+  PERMISSION_LIST_KEY,
   OPERATION_LIST_KEY,
 } from '/@/enums/cacheEnum'
 import { getAuthCache, setAuthCache } from '/@/utils/auth'
@@ -35,6 +36,7 @@ interface UserState {
   lastUpdateTime: number
   //pm
   system: string
+  permissions: []
   menus: []
   operations: []
 }
@@ -54,6 +56,7 @@ export const useUserStore = defineStore({
     lastUpdateTime: 0,
     //pm
     system: 'pm',
+    permissions: [],
     menus: [],
     operations: [],
   }),
@@ -72,6 +75,11 @@ export const useUserStore = defineStore({
     },
     getLastUpdateTime(state): number {
       return state.lastUpdateTime
+    },
+    getPermissions(state): [] {
+      return state.permissions.length > 0
+        ? state.permissions
+        : getAuthCache<[]>(PERMISSION_LIST_KEY)
     },
     getMenus(state): [] {
       return state.menus.length > 0 ? state.menus : getAuthCache<[]>(MENU_LIST_KEY)
@@ -98,6 +106,10 @@ export const useUserStore = defineStore({
       this.lastUpdateTime = new Date().getTime()
       setAuthCache(USER_INFO_KEY, info)
     },
+    setPermissions(info: []) {
+      this.permissions = info
+      setAuthCache(PERMISSION_LIST_KEY, info)
+    },
     setMenus(info: []) {
       this.menus = info
       setAuthCache(MENU_LIST_KEY, info)
@@ -114,6 +126,7 @@ export const useUserStore = defineStore({
       this.token = ''
       this.roleList = []
       this.menus = []
+      this.permissions = []
       this.operations = []
       this.sessionTimeout = false
     },
@@ -184,10 +197,13 @@ export const useUserStore = defineStore({
       this.setUserInfo(userInfo)
       //FIXME 现在默认只传博洋家纺的brandId
       const permissionList = await getMenuList({ systemCode: this.getSystem, brandId: 1 })
+      this.setPermissions(permissionList)
+      //菜单权限
       const menuList = permissionList.menus.map(function (item) {
         return item.path
       })
       this.setMenus(menuList)
+      //操作权限
       const oprationList = permissionList.operations.map(function (item) {
         return item.operationType
       })
@@ -208,6 +224,7 @@ export const useUserStore = defineStore({
       this.setToken(undefined)
       this.setSessionTimeout(false)
       this.setUserInfo(null)
+      this.setPermissions([])
       this.setMenus([])
       this.setOperations([])
       goLogin && window.open(apiUrl.split('/usercenter')[0] + '/uums/login', '_self')

@@ -20,28 +20,33 @@
           <TableAction
             :dropDownActions="[
               {
-                label: '修改款式信息',
-                icon: 'ic:outline-delete-outline',
+                label: '修改',
+                icon: 'icon-park-outline:modify',
                 onClick: updateStyle.bind(null, record),
               },
               {
                 label: '增加同款式商品',
-                icon: 'ic:outline-delete-outline',
+                icon: 'mdi:new-box',
                 onClick: addCode.bind(null, record),
               },
               {
                 label: '上传图片',
-                icon: 'ic:outline-delete-outline',
+                icon: 'fluent:image-add-24-regular',
                 onClick: handleUpload.bind(null, record),
               },
               {
                 label: '下载原图',
-                icon: 'ic:outline-delete-outline',
+                icon: 'uil:image-download',
                 onClick: downloadIamge.bind(null, record),
               },
               {
-                label: '更换款式绑定',
-                icon: 'ic:outline-delete-outline',
+                label: '查看日志',
+                icon: 'mdi:pencil-box',
+                auth: 'productStyle:log',
+              },
+              {
+                label: '换绑所属编号',
+                icon: 'mdi:format-section',
                 onClick: switchBind.bind(null, record),
               },
             ]"
@@ -61,7 +66,14 @@
             class="my-5"
             :accept="['image/*']"
         /></div>
-        <a-button preIcon="mdi:plus-thick" type="primary" @click="openStyleModal"> 新建 </a-button>
+        <a-button
+          preIcon="mdi:new-box"
+          type="primary"
+          @click="openStyleModal"
+          v-show="hasPermission('productStyle:add')"
+        >
+          新建
+        </a-button>
       </template>
     </BasicTable>
     <StyleFormModal1 @register="register1" @is-reload="isReload" />
@@ -89,9 +101,11 @@
   } from '@/api/productManage/productStyle'
   import { getProdClassTreeOnMiddleType } from '@/api/productManage/productParam'
   import { uploadStyleImg } from '@/api/productManage/productPlus'
+  import { usePermission } from './customUtil/usePermission'
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
+  const { hasPermission } = usePermission()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const styleData = ref({})

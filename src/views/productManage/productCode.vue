@@ -21,33 +21,44 @@
             :dropDownActions="[
               {
                 label: '修改',
-                icon: 'ic:outline-delete-outline',
+                icon: 'icon-park-outline:modify',
                 onClick: updateCode.bind(null, record),
+                auth: 'productCode:update',
               },
               {
                 label: '新增同款商品',
-                icon: 'ic:outline-delete-outline',
+                icon: 'mdi:new-box',
                 onClick: addBrotherCode.bind(null, record),
+                auth: 'productCode:addBro',
               },
               {
                 label: '上传图片',
-                icon: 'ic:outline-delete-outline',
+                icon: 'fluent:image-add-24-regular',
                 onClick: handleUpload.bind(null, record),
+                auth: 'productCode:uploadImage',
               },
               {
                 label: '下载原图',
-                icon: 'ic:outline-delete-outline',
+                icon: 'uil:image-download',
                 onClick: downloadIamge.bind(null, record),
+                auth: 'productCode:downloadImage',
               },
               {
                 label: '下载商品说明书',
-                icon: 'ic:outline-delete-outline',
+                icon: 'mdi:file-export-outline',
                 onClick: downloadSpec.bind(null, record),
+                auth: 'productCode:downloadDesc',
+              },
+              {
+                label: '查看日志',
+                icon: 'mdi:pencil-box',
+                auth: 'productCode:log',
               },
               {
                 label: '更换款式绑定',
-                icon: 'ic:outline-delete-outline',
+                icon: 'mdi:format-section',
                 onClick: switchBind.bind(null, record),
+                auth: 'productCode:switchBind',
               },
             ]"
           />
@@ -66,7 +77,26 @@
             class="my-5"
             :accept="['image/*']"
         /></div>
-        <a-button preIcon="mdi:page-next-outline" type="primary" @click="openSearchStyleModal">
+        <a-button
+          preIcon="fa6-solid:file-excel"
+          type="primary"
+          v-show="hasPermission('productCode:export')"
+        >
+          导出
+        </a-button>
+        <a-button
+          preIcon="ep:upload-filled"
+          type="primary"
+          v-show="hasPermission('productCode:batchImageUpload')"
+        >
+          批量上传图片
+        </a-button>
+        <a-button
+          preIcon="mdi:new-box"
+          type="primary"
+          @click="openSearchStyleModal"
+          v-show="hasPermission('productCode:add')"
+        >
           新建
         </a-button>
       </template>
@@ -93,9 +123,11 @@
   import { getProdCodeList, getProdCodeById } from '@/api/productManage/productCode'
   import { getProdClassTree } from '@/api/productManage/productParam'
   import { uploadCodeImg, specDownload } from '@/api/productManage/productPlus'
+  import { usePermission } from './customUtil/usePermission'
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
+  const { hasPermission } = usePermission()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const styleData = ref({})

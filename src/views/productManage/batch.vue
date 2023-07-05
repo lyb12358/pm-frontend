@@ -40,7 +40,9 @@
   import { PageWrapper } from '@/components/Page'
   import { getBatchLogList } from '@/api/productManage/batch'
   import { uploadMatImg } from '@/api/productManage/productPlus'
+  import { usePermission } from './customUtil/usePermission'
 
+  const { hasPermission } = usePermission()
   const searchInfo = reactive<any>({})
   const singleUpload = ref()
   const singleImgParam = ref({ id: null })

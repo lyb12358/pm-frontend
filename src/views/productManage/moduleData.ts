@@ -37,6 +37,7 @@ export function getProdCodeColumns(): BasicColumn[] {
     { dataIndex: 'supplyPrice', title: '供应价', key: 'supplyPrice' },
     { dataIndex: 'costPrice', title: '成本价', key: 'costPrice' },
     { dataIndex: 'numModel', title: '件数', key: 'numModel', defaultHidden: true },
+    { dataIndex: 'netWeight', title: '克重', key: 'netWeight', defaultHidden: true },
     { dataIndex: 'boxNum', title: '装箱数', key: 'boxNum', defaultHidden: true },
     { dataIndex: 'boxModel', title: '装箱规格', key: 'boxModel', defaultHidden: true },
     { dataIndex: 'boxVolume', title: '装箱体积', key: 'boxVolume', defaultHidden: true },
@@ -311,12 +312,6 @@ export const codeModalSchemas: FormSchema[] = [
     field: 'isRate',
     component: 'Switch',
     label: '是否计算周转率',
-    defaultValue: false,
-  },
-  {
-    field: 'isQxmini',
-    component: 'Switch',
-    label: '是否七星小程序展示',
     defaultValue: false,
   },
   {
