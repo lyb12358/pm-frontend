@@ -3,7 +3,7 @@
     <template #headerContent>
       <div class="flex justify-between items-center">
         <span class="flex-1">
-          商品中心前端主要基于Vue3.0、Vite、 Ant-Design-Vue 、TypeScript开发
+          商品中心前端主要基于Vue3.0、Vite、Ant-Design-Vue、Pinia、TypeScript开发
         </span>
       </div>
     </template>

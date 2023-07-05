@@ -30,7 +30,7 @@
 
   const permissionList: any = useUserStore().getPermissions
   const columnPermissions = permissionList.operations.filter(
-    (item: any) => item.operationType == 'productCode:update',
+    (item: any) => item.operationType == 'productStyle:update',
   )[0].columnPermissions
 
   const { createMessage } = useMessage()

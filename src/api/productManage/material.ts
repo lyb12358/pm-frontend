@@ -10,9 +10,9 @@ export const getMaterialList = (data: SearchForm) =>
       ignoreCancelToken: true,
     },
   })
-export const getMatById = (params) =>
-  defHttp.get<ResponseBean<any>>({
-    url: `/pm/mat/id/${params.id}`,
+export const getMatById = (id) =>
+  simpleHttp.get<ResponseBean<any>>({
+    url: `/pm/mat/id/${id}`,
   })
 export const addMat = (data) =>
   simpleHttp.post<ResponseBean<any>>({

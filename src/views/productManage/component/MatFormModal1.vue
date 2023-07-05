@@ -32,7 +32,7 @@
 
   const permissionList: any = useUserStore().getPermissions
   const columnPermissions = permissionList.operations.filter(
-    (item: any) => item.operationType == 'productCode:update',
+    (item: any) => item.operationType == 'material:update',
   )[0].columnPermissions
 
   const { createMessage } = useMessage()
@@ -213,7 +213,6 @@
             componentProps: {
               options: await getMatClassTree(),
               onChange: async (e) => {
-                console.log(e)
                 if (e.length == 3) {
                   updateSchema([
                     {
