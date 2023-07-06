@@ -104,7 +104,7 @@ export function getProdCodeFormConfig(): Partial<FormProps> {
       },
       {
         field: `prodClass`,
-        label: `类别`,
+        label: `分类`,
         component: 'Cascader',
         componentProps: {
           changeOnSelect: true,
@@ -409,7 +409,7 @@ export function getProdStyleFormConfig(): Partial<FormProps> {
       },
       {
         field: `prodClass`,
-        label: `类别`,
+        label: `分类`,
         component: 'Cascader',
         componentProps: {
           changeOnSelect: true,
@@ -469,8 +469,8 @@ export const styleModalSchemas: FormSchema[] = [
     rules: [{ required: true, message: '品牌必选', type: 'number' }],
   },
   {
-    field: `prodClass`,
-    label: `类别`,
+    field: `prodFamily`,
+    label: `分类`,
     component: 'Cascader',
     componentProps: {
       changeOnSelect: true,
@@ -760,7 +760,7 @@ export const matModalSchemas: FormSchema[] = [
     rules: [{ required: true, message: '品牌必选', type: 'number' }],
   },
   {
-    field: `prodClass`,
+    field: `matFamily`,
     label: `分类`,
     component: 'Cascader',
     componentProps: {

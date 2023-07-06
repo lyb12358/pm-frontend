@@ -59,7 +59,7 @@
         <a-button
           preIcon="mdi:new-box"
           type="primary"
-          @click="openModal1"
+          @click="openNewModal"
           v-show="hasPermission('material:add')"
         >
           新建
@@ -87,7 +87,7 @@
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
-  const { hasPermission } = usePermission()
+  const { hasPermission, checkMaintainPermission } = usePermission()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const singleUpload = ref()
@@ -115,6 +115,16 @@
       // slots: { customRender: 'action' },
     },
   })
+  //modal
+  const [register1, { openModal: openModal1 }] = useModal()
+  onMounted(async () => {
+    getForm().updateSchema({
+      field: `prodClass`,
+      componentProps: {
+        options: await getMatClassTree(),
+      },
+    })
+  })
 
   function checkPreviewImg({ id, thumbnail }: any) {
     if (!(thumbnail === null) && !(thumbnail === '') && !(thumbnail === undefined)) {
@@ -133,10 +143,15 @@
   function isReload(value) {
     value && reload()
   }
+  function openNewModal() {
+    openModal1()
+  }
   function updateMat(record: any) {
     getMatById(record.id).then((data) => {
       if (data.code == 200) {
-        openModal1(true, data.data)
+        checkMaintainPermission(data.data.matType)
+          ? openModal1(true, data.data)
+          : error('没有权限维护该类别物料/辅料')
       } else {
         error(data.msg)
       }
@@ -178,15 +193,5 @@
   function handleChange(list: string[]) {
     reload()
   }
-  //modal
-  const [register1, { openModal: openModal1 }] = useModal()
-  onMounted(async () => {
-    getForm().updateSchema({
-      field: `prodClass`,
-      componentProps: {
-        options: await getMatClassTree(),
-      },
-    })
-  })
 </script>
 <style lang="less"></style>

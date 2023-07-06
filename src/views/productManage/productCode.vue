@@ -124,10 +124,11 @@
   import { getProdClassTree } from '@/api/productManage/productParam'
   import { uploadCodeImg, specDownload } from '@/api/productManage/productPlus'
   import { usePermission } from './customUtil/usePermission'
+  import { useUserStore } from '@/store/modules/user'
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
-  const { hasPermission } = usePermission()
+  const { hasPermission, checkMaintainPermission } = usePermission()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const styleData = ref({})
@@ -157,7 +158,10 @@
       // slots: { customRender: 'action' },
     },
   })
-
+  //modal
+  const [register1, { openModal: openCodeModal }] = useModal()
+  const [register2, { openModal: openSearchStyleModal }] = useModal()
+  const [register3, { openModal: openSwitchBindModal }] = useModal()
   function checkPreviewImg({ id, styleId, codeThumbnail, styleThumbnail }: any) {
     if (!(codeThumbnail === null) && !(codeThumbnail === '') && !(codeThumbnail === undefined)) {
       return [baseApi + '/image/code/' + id + '/' + codeThumbnail]
@@ -186,8 +190,12 @@
   function updateCode(record: any) {
     getProdCodeById(record.id).then((data) => {
       if (data.code == 200) {
-        styleData.value = data.data
-        openCodeModal(true, data.data)
+        if (checkMaintainPermission(data.data.prodType)) {
+          styleData.value = data.data
+          openCodeModal(true, data.data)
+        } else {
+          error('没有权限维护该类别商品')
+        }
       } else {
         error(data.msg)
       }
@@ -200,8 +208,12 @@
   function addBrotherCode(record: any) {
     getProdCodeById(record.id).then((data) => {
       if (data.code == 200) {
-        styleData.value = data.data
-        openCodeModal(true)
+        if (checkMaintainPermission(data.data.prodType)) {
+          styleData.value = data.data
+          openCodeModal(true)
+        } else {
+          error('没有权限维护该类别商品')
+        }
       } else {
         error(data.msg)
       }
@@ -269,11 +281,6 @@
   function switchBind(record: any) {
     openSwitchBindModal(true, record)
   }
-  //modal
-  const [register1, { openModal: openCodeModal }] = useModal()
-  const [register2, { openModal: openSearchStyleModal }] = useModal()
-  const [register3, { openModal: openSwitchBindModal }] = useModal()
-
   onMounted(async () => {
     getForm().updateSchema({
       field: `prodClass`,

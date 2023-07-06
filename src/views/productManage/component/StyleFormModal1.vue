@@ -27,7 +27,9 @@
     getProdParamOptions,
   } from '@/api/productManage/productParam'
   import { useUserStore } from '@/store/modules/user'
+  import { usePermission } from '.././customUtil/usePermission'
 
+  const { checkMaintainPermission } = usePermission()
   const permissionList: any = useUserStore().getPermissions
   const columnPermissions = permissionList.operations.filter(
     (item: any) => item.operationType == 'productStyle:update',
@@ -73,10 +75,11 @@
   }
   function handleSubmit(values) {
     loading.value = true
-    values.prodFamily = values.prodClass[0]
-    values.prodType = values.prodClass[1]
-    values.bigType = values.prodClass[2]
-    values.prodClass[3] && (values.middleType = values.prodClass[3])
+    let prodClass = values.prodFamily
+    values.prodFamily = prodClass[0]
+    values.prodType = prodClass[1]
+    values.bigType = prodClass[2]
+    prodClass[3] && (values.middleType = prodClass[3])
     if (modalStatus.value) {
       updateProdStyle(values).then((data) => {
         if (data.code == 200) {
@@ -90,7 +93,11 @@
         loading.value = false
       })
     } else {
-      //FIXME 维护类别权限控制
+      if (!checkMaintainPermission(values.prodType)) {
+        error('没有权限维护该类别商品')
+        loading.value = false
+        return
+      }
       values.isDel = 0
       values.status = 1
       values.isSync = 1
@@ -110,17 +117,17 @@
 
   function onDataReceive(data) {
     modalStatus.value = 1 //修改标题
-    let prodClass: Array<number> = []
-    data.prodFamily && prodClass.push(data.prodFamily)
-    data.prodType && prodClass.push(data.prodType)
-    data.bigType && prodClass.push(data.bigType)
-    data.middleType && prodClass.push(data.middleType)
+    let prodFamily: Array<number> = []
+    data.prodFamily && prodFamily.push(data.prodFamily)
+    data.prodType && prodFamily.push(data.prodType)
+    data.bigType && prodFamily.push(data.bigType)
+    data.middleType && prodFamily.push(data.middleType)
     modelRef.value = {
       id: data.id,
       prodStyle: data.prodStyle,
       styleName: data.styleName,
       comId: data.comId,
-      prodClass: prodClass,
+      prodFamily: prodFamily,
       prodAttr: data.prodAttr,
       prodYear: data.prodYear,
       prodSeason: data.prodSeason,
@@ -184,7 +191,7 @@
             },
           },
           {
-            field: 'prodClass',
+            field: 'prodFamily',
             componentProps: {
               options: await getProdClassTreeOnMiddleType(),
             },

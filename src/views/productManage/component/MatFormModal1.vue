@@ -29,7 +29,9 @@
     getProdSpeOptionsByParent,
   } from '@/api/productManage/productParam'
   import { useUserStore } from '@/store/modules/user'
+  import { usePermission } from '.././customUtil/usePermission'
 
+  const { checkMaintainPermission } = usePermission()
   const permissionList: any = useUserStore().getPermissions
   const columnPermissions = permissionList.operations.filter(
     (item: any) => item.operationType == 'material:update',
@@ -75,11 +77,12 @@
   }
   function handleSubmit(values) {
     loading.value = true
-    values.matFamily = values.prodClass[0]
-    values.matType = values.prodClass[1]
-    values.bigType = values.prodClass[2]
-    values.prodClass[3] && (values.middleType = values.prodClass[3])
-    values.prodClass[4] && (values.smallType = values.prodClass[4])
+    let prodClass = values.matFamily
+    values.matFamily = prodClass[0]
+    values.matType = prodClass[1]
+    values.bigType = prodClass[2]
+    prodClass[3] && (values.middleType = prodClass[3])
+    prodClass[4] && (values.smallType = prodClass[4])
     if (modalStatus.value) {
       updateMat(values).then((data) => {
         if (data.code == 200) {
@@ -93,6 +96,11 @@
         loading.value = false
       })
     } else {
+      if (!checkMaintainPermission(values.matType)) {
+        error('没有权限维护该类别物料/辅料')
+        loading.value = false
+        return
+      }
       //FIXME 维护类别权限控制
       values.isDel = 0
       values.status = 1
@@ -113,25 +121,25 @@
 
   async function onDataReceive(data) {
     modalStatus.value = 1 //修改标题
-    let prodClass: Array<number> = []
-    data.matFamily && prodClass.push(data.matFamily)
-    data.matType && prodClass.push(data.matType)
-    data.bigType && prodClass.push(data.bigType)
-    data.middleType && prodClass.push(data.middleType)
-    data.smallType && prodClass.push(data.smallType)
+    let matFamily: Array<number> = []
+    data.matFamily && matFamily.push(data.matFamily)
+    data.matType && matFamily.push(data.matType)
+    data.bigType && matFamily.push(data.bigType)
+    data.middleType && matFamily.push(data.middleType)
+    data.smallType && matFamily.push(data.smallType)
     //初次修改时触发cat、spe回调
-    if (prodClass.length > 2) {
+    if (matFamily.length > 2) {
       updateSchema([
         {
           field: 'matCat',
           componentProps: {
-            options: (await getProdCatOptions()).filter((item) => item.classId == prodClass[2]),
+            options: (await getProdCatOptions()).filter((item) => item.classId == matFamily[2]),
           },
         },
         {
           field: 'matSpe',
           componentProps: {
-            options: await getProdSpeOptionsByParent(prodClass[2]),
+            options: await getProdSpeOptionsByParent(matFamily[2]),
           },
         },
       ])
@@ -141,7 +149,7 @@
       matCode: data.matCode,
       matName: data.matName,
       comId: data.comId,
-      prodClass: prodClass,
+      matFamily: matFamily,
       matCat: data.matCat,
       matSpe: data.matSpe,
       matAttr: data.matAttr,
@@ -209,7 +217,7 @@
             },
           },
           {
-            field: 'prodClass',
+            field: 'matFamily',
             componentProps: {
               options: await getMatClassTree(),
               onChange: async (e) => {

@@ -102,10 +102,11 @@
   import { getProdClassTreeOnMiddleType } from '@/api/productManage/productParam'
   import { uploadStyleImg } from '@/api/productManage/productPlus'
   import { usePermission } from './customUtil/usePermission'
+  import { useUserStore } from '@/store/modules/user'
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
-  const { hasPermission } = usePermission()
+  const { hasPermission, checkMaintainPermission } = usePermission()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
   const styleData = ref({})
@@ -155,7 +156,9 @@
   function updateStyle(record: any) {
     getProdStyleById(record.id).then((data) => {
       if (data.code == 200) {
-        openStyleModal(true, data.data)
+        checkMaintainPermission(data.data.prodType)
+          ? openStyleModal(true, data.data)
+          : error('没有权限维护该类别商品')
       } else {
         error(data.msg)
       }
@@ -164,8 +167,12 @@
   function addCode(record: any) {
     getProdStyleById(record.id).then((data) => {
       if (data.code == 200) {
-        styleData.value = data.data
-        openCodeModal(true)
+        if (checkMaintainPermission(data.data.prodType)) {
+          styleData.value = data.data
+          openCodeModal(true)
+        } else {
+          error('没有权限维护该类别商品')
+        }
       } else {
         error(data.msg)
       }

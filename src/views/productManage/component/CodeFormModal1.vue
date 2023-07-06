@@ -97,7 +97,7 @@
         loading.value = false
       })
     } else {
-      //FIXME 维护类别权限控制
+      //FIXME 到这一步了理论上不用再检索权限
       values.isDel = 0
       values.status = 1
       values.isSync = 1

@@ -18,10 +18,11 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicModal, useModalInner } from '@/components/Modal'
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index'
+  import { usePermission } from '.././customUtil/usePermission'
   import { getProdStyleByProdStyle } from '@/api/productManage/productStyle'
 
+  const { checkMaintainPermission } = usePermission()
   const { createMessage } = useMessage()
-
   const { info, success, warning, error } = createMessage
 
   const emit = defineEmits(['check', 'register'])
@@ -58,9 +59,13 @@
   function handleSubmit(values) {
     getProdStyleByProdStyle(values.prodStyle).then((data) => {
       if (data.code == 200) {
-        closeModal()
-        onModalClose()
-        emit('check', data.data)
+        if (checkMaintainPermission(data.data.prodType)) {
+          closeModal()
+          onModalClose()
+          emit('check', data.data)
+        } else {
+          error('没有权限维护该类别商品')
+        }
       } else {
         error(data.msg)
       }
