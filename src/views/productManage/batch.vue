@@ -23,8 +23,49 @@
             class="my-5"
             :accept="['image/*']"
         /></div>
-        <a-button preIcon="mdi:page-next-outline" type="primary"> 导入 </a-button>
-        <a-button preIcon="mdi:page-next-outline" type="primary"> 下载模板</a-button>
+        <Dropdown
+          :trigger="['click']"
+          :dropMenuList="[
+            {
+              event: '1',
+              text: '导入款式',
+              onClick: openUploadModal.bind(null, 1),
+            },
+            {
+              event: '2',
+              text: '导入编号',
+              onClick: openUploadModal.bind(null, 2),
+            },
+            {
+              event: '3',
+              text: '导入物料',
+              onClick: openUploadModal.bind(null, 3),
+            },
+          ]"
+          ><a-button preIcon="mdi:page-next-outline" type="primary"> 导入</a-button>
+        </Dropdown>
+        <Dropdown
+          :trigger="['click']"
+          :dropMenuList="[
+            {
+              event: '1',
+              text: '款式模板',
+              onClick: openUploadModal.bind(null, 1),
+            },
+            {
+              event: '2',
+              text: '编号模板',
+              onClick: openUploadModal.bind(null, 2),
+            },
+            {
+              event: '3',
+              text: '物料模板',
+              onClick: openUploadModal.bind(null, 3),
+            },
+          ]"
+        >
+          <a-button preIcon="mdi:page-next-outline" type="primary"> 下载模板</a-button></Dropdown
+        >
       </template>
     </BasicTable>
   </PageWrapper>
@@ -33,6 +74,7 @@
   import { reactive, onMounted, ref, toRef, toRefs } from 'vue'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
+  import { Dropdown } from '@/components/Dropdown'
   import { useModal } from '@/components/Modal'
   import { BasicUpload } from '@/components/Upload'
   import Icon from '@/components/Icon/Icon.vue'
@@ -74,6 +116,9 @@
   }
   function handleChange(list: string[]) {
     reload()
+  }
+  function openUploadModal(value) {
+    console.log(value)
   }
   onMounted(async () => {})
 </script>
