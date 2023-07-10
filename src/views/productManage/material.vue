@@ -23,16 +23,19 @@
                 label: '修改',
                 icon: 'icon-park-outline:modify',
                 onClick: updateMat.bind(null, record),
+                auth: 'material:update',
               },
               {
                 label: '上传图片',
                 icon: 'fluent:image-add-24-regular',
                 onClick: handleUpload.bind(null, record),
+                auth: 'material:uploadImage',
               },
               {
                 label: '下载原图',
                 icon: 'uil:image-download',
                 onClick: downloadIamge.bind(null, checkImg(record)[0], record.matName),
+                auth: 'material:downloadImage',
               },
               {
                 label: '查看日志',

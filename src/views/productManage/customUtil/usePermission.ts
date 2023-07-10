@@ -10,7 +10,7 @@ export function usePermission() {
   //维护商品权限
   const maintainPermission = permissionList.operations
     .filter((item: any) => item.operationType == 'productStyle:permission')[0]
-    .columnPermissions.map((item) => {
+    .columnPermissions?.map((item) => {
       return Number(item.columnName)
     })
   /**

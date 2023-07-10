@@ -23,21 +23,25 @@
                 label: '修改',
                 icon: 'icon-park-outline:modify',
                 onClick: updateStyle.bind(null, record),
+                auth: 'productStyle:update',
               },
               {
                 label: '增加同款式商品',
                 icon: 'mdi:new-box',
                 onClick: addCode.bind(null, record),
+                auth: 'productStyle:addChild',
               },
               {
                 label: '上传图片',
                 icon: 'fluent:image-add-24-regular',
                 onClick: handleUpload.bind(null, record),
+                auth: 'productStyle:uploadImage',
               },
               {
                 label: '下载原图',
                 icon: 'uil:image-download',
                 onClick: downloadIamge.bind(null, checkImg(record)[0], record.prodName),
+                auth: 'productStyle:downloadImage',
               },
               {
                 label: '查看日志',
@@ -48,6 +52,12 @@
                 label: '换绑所属编号',
                 icon: 'mdi:format-section',
                 onClick: switchBind.bind(null, record),
+                auth: 'productStyle:switchBind',
+              },
+              {
+                label: '删除',
+                icon: 'mdi:delete',
+                auth: 'productStyle:delete',
               },
             ]"
           />
