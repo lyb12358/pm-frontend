@@ -50,17 +50,17 @@
             {
               event: '1',
               text: '款式模板',
-              onClick: openUploadModal.bind(null, 1),
+              onClick: downloadExcelModel.bind(null, 'styleImportModel'),
             },
             {
               event: '2',
               text: '编号模板',
-              onClick: openUploadModal.bind(null, 2),
+              onClick: downloadExcelModel.bind(null, 'codeImportModel'),
             },
             {
               event: '3',
               text: '物料模板',
-              onClick: openUploadModal.bind(null, 3),
+              onClick: downloadExcelModel.bind(null, 'matImportModel'),
             },
           ]"
         >
@@ -81,10 +81,12 @@
   import { getBatchColumns } from './batchData'
   import { PageWrapper } from '@/components/Page'
   import { getBatchLogList } from '@/api/productManage/batch'
-  import { uploadMatImg } from '@/api/productManage/productPlus'
+  import { uploadMatImg, importModelDownload } from '@/api/productManage/productPlus'
   import { usePermission } from './customUtil/usePermission'
+  import { useUtil } from './customUtil/useUtil'
 
   const { hasPermission } = usePermission()
+  const { fileDownload } = useUtil()
   const searchInfo = reactive<any>({})
   const singleUpload = ref()
   const singleImgParam = ref({ id: null })
@@ -119,6 +121,19 @@
   }
   function openUploadModal(value) {
     console.log(value)
+  }
+  function downloadExcelModel(name) {
+    importModelDownload(name).then((response) => {
+      if (name == 'styleImportModel') {
+        fileDownload(response, '商品款式导入模板.xls')
+      }
+      if (name == 'codeImportModel') {
+        fileDownload(response, '商品编号导入模板.xls')
+      }
+      if (name == 'matImportModel') {
+        fileDownload(response, '物料辅料导入模板.xls')
+      }
+    })
   }
   onMounted(async () => {})
 </script>
