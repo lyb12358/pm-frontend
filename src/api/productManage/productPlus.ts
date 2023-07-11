@@ -69,3 +69,16 @@ export function uploadMatImg(
     params,
   )
 }
+//batch img ipload
+export function uploadBatchCodeImg(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: ProgressEvent) => void,
+) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: apiUrl + '/pm/imageUpload/prodCode/new',
+      onUploadProgress,
+    },
+    params,
+  )
+}

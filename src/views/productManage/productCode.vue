@@ -75,11 +75,21 @@
             :api="uploadCodeImg"
             :uploadParams="singleImgParam"
             class="my-5"
+            :accept="['image/*']" /><BasicUpload
+            ref="multiUpload"
+            :maxSize="5"
+            :maxNumber="100"
+            @change="handleChange"
+            :api="uploadBatchCodeImg"
+            :uploadParams="multiImgParam"
+            class="my-5"
             :accept="['image/*']"
         /></div>
         <a-button
           preIcon="fa6-solid:file-excel"
           type="primary"
+          @click="handleExport"
+          :loading="excelLoading"
           v-show="hasPermission('productCode:export')"
         >
           导出
@@ -87,6 +97,8 @@
         <a-button
           preIcon="ep:upload-filled"
           type="primary"
+          @click="handleMultiUpload"
+          :loading="excelLoading"
           v-show="hasPermission('productCode:batchImageUpload')"
         >
           批量上传图片
@@ -112,7 +124,6 @@
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
   import { useModal } from '@/components/Modal'
   import { BasicUpload } from '@/components/Upload'
-  import { uploadApi } from '@/api/sys/upload'
   import CodeFormModal1 from './component/CodeFormModal1.vue'
   import CodeFormModal2 from './component/CodeFormModal2.vue'
   import SwitchBindModal from './component/SwitchBindModal.vue'
@@ -122,9 +133,15 @@
   import { PageWrapper } from '@/components/Page'
   import { getProdCodeList, getProdCodeById } from '@/api/productManage/productCode'
   import { getProdClassTree } from '@/api/productManage/productParam'
-  import { uploadCodeImg, specDownload } from '@/api/productManage/productPlus'
+  import {
+    uploadCodeImg,
+    uploadBatchCodeImg,
+    specDownload,
+    codeExport,
+  } from '@/api/productManage/productPlus'
   import { usePermission } from './customUtil/usePermission'
   import { useUtil } from './customUtil/useUtil'
+  import { dateUtil } from '@/utils/dateUtil'
   import { useUserStore } from '@/store/modules/user'
   import { useGlobSetting } from '/@/hooks/setting'
 
@@ -133,9 +150,11 @@
   const { downloadIamge, fileDownload } = useUtil()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
+  const excelLoading = ref(false)
   const styleData = ref({})
   const singleUpload = ref()
   const singleImgParam = ref({ id: null })
+  const multiImgParam = ref({})
   const multiUpload = ref()
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
@@ -233,12 +252,35 @@
     singleUpload.value.fileList = []
     singleUpload.value.openUploadModal()
   }
+  function handleMultiUpload(record: any) {
+    multiUpload.value.fileList = []
+    multiUpload.value.openUploadModal()
+  }
   function handleChange(list: string[]) {
     reload()
   }
   //switch bind
   function switchBind(record: any) {
     openSwitchBindModal(true, record)
+  }
+  //export
+  function handleExport() {
+    const formDate = getForm().getFieldsValue()
+    if (JSON.stringify(formDate) == '{}') {
+      warning('搜索项没有值，不允许导出操作!')
+    } else {
+      excelLoading.value = true
+      codeExport(searchInfo)
+        .then((data) => {
+          fileDownload(
+            data,
+            '商品编号导出' + dateUtil(Date.now()).format('YYYY-MM-DD HH:mm:ss') + '.xls',
+          )
+        })
+        .finally(() => {
+          excelLoading.value = false
+        })
+    }
   }
   onMounted(async () => {
     getForm().updateSchema({

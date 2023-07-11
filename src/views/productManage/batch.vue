@@ -178,7 +178,6 @@
         .then((data) => {
           if (data.code == 200) {
             success(data.message)
-            syncLoading.value = false
             reload()
           } else {
             error(data.msg)

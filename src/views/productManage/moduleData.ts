@@ -380,8 +380,24 @@ export function getProdStyleColumns(): BasicColumn[] {
     { dataIndex: 'designerName', title: '设计师', key: 'designerName', defaultHidden: true },
     { dataIndex: 'styleIsSync', title: '是否同步', key: 'styleIsSync', defaultHidden: true },
     { dataIndex: 'gmtCreate', title: '创建时间', key: 'gmtCreate', defaultHidden: true },
-    { dataIndex: 'gmtModified', title: '修改时间', key: 'gmtModified', defaultHidden: true },
-    { dataIndex: 'syncProtype', title: '集团同步类别', key: 'syncProtype', defaultHidden: true },
+    {
+      dataIndex: 'gmtModified',
+      title: '修改时间',
+      key: 'gmtModified',
+      defaultHidden: true,
+      format: (text) => {
+        return dateUtil(text).format('YYYY-MM-DD HH:mm:ss')
+      },
+    },
+    {
+      dataIndex: 'syncProtype',
+      title: '集团同步类别',
+      key: 'syncProtype',
+      defaultHidden: true,
+      format: (text) => {
+        return dateUtil(text).format('YYYY-MM-DD HH:mm:ss')
+      },
+    },
   ]
 }
 export function getProdStyleFormConfig(): Partial<FormProps> {
@@ -671,8 +687,24 @@ export function getMaterialColumns(): BasicColumn[] {
     { dataIndex: 'collectTime', title: '取件时间', key: 'collectTime', defaultHidden: true },
     { dataIndex: 'vipPrice', title: '会员价', key: 'vipPrice', defaultHidden: true },
     { dataIndex: 'point', title: '积分价', key: 'point', defaultHidden: true },
-    { dataIndex: 'gmtCreate', title: '创建时间', key: 'gmtCreate', defaultHidden: true },
-    { dataIndex: 'gmtModified', title: '修改时间', key: 'gmtModified', defaultHidden: true },
+    {
+      dataIndex: 'gmtCreate',
+      title: '创建时间',
+      key: 'gmtCreate',
+      defaultHidden: true,
+      format: (text) => {
+        return dateUtil(text).format('YYYY-MM-DD HH:mm:ss')
+      },
+    },
+    {
+      dataIndex: 'gmtModified',
+      title: '修改时间',
+      key: 'gmtModified',
+      defaultHidden: true,
+      format: (text) => {
+        return dateUtil(text).format('YYYY-MM-DD HH:mm:ss')
+      },
+    },
   ]
 }
 export function getMaterialFormConfig(): Partial<FormProps> {
