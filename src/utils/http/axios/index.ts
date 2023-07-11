@@ -168,6 +168,12 @@ const transform: AxiosTransform = {
     }
     //FIXME 检查cookie和localstorage的token，串号登录时强制登出
     config.headers['systemCode'] = userStore.getSystem
+    const userName = userStore.getUserInfo.sysUser?.realName
+    const workCode = userStore.getUserInfo.sysUser?.workCode
+    const userId = userStore.getUserInfo.sysUser?.id
+    config.headers['userName'] = encodeURI(userName)
+    config.headers['workCode'] = workCode
+    config.headers['userId'] = userId
     return config
   },
 

@@ -57,6 +57,7 @@
               {
                 label: '删除',
                 icon: 'mdi:delete',
+                onClick: deleteStyle.bind(null, record.id),
                 auth: 'productStyle:delete',
               },
             ]"
@@ -201,6 +202,16 @@
   //switch bind
   function switchBind(record: any) {
     openSwitchBindModal(true, record)
+  }
+  //delete
+  function deleteStyle(id) {
+    deleteProdStyle(id).then((data) => {
+      if (data.code == 200) {
+        reload()
+      } else {
+        error(data.msg)
+      }
+    })
   }
   //modal
   const [register1, { openModal: openStyleModal }] = useModal()

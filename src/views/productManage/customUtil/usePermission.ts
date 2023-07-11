@@ -32,7 +32,7 @@ export function usePermission() {
    *
    */
   function checkMaintainPermission(value) {
-    return maintainPermission.includes(value)
+    return maintainPermission?.includes(value)
   }
 
   return { hasPermission, checkMaintainPermission }

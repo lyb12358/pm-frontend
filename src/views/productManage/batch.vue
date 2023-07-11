@@ -8,20 +8,43 @@
             :color="record.isSync ? '#22c55e' : 'red'"
             size="20"
           />
+          <a-button
+            v-if="!record.isSync"
+            :loading="syncLoading"
+            @click="syncBatch(record.id, record.batchType)"
+          >
+            同步</a-button
+          >
         </template>
       </template>
       <template #toolbar>
         <!-- 平时隐藏上传按钮，通过其他按钮来控制显示 -->
         <div v-show="false">
           <BasicUpload
-            ref="singleUpload"
+            ref="singleUpload1"
             :maxSize="5"
             :maxNumber="1"
             @change="handleChange"
-            :api="uploadMatImg"
-            :uploadParams="singleImgParam"
+            :api="addBatchProdStyle"
+            :uploadParams="batchParam"
             class="my-5"
-            :accept="['image/*']"
+            :accept="['.xls', '.xlsx']" /><BasicUpload
+            ref="singleUpload2"
+            :maxSize="5"
+            :maxNumber="1"
+            @change="handleChange"
+            :api="addBatchProdCode"
+            :uploadParams="batchParam"
+            class="my-5"
+            :accept="['.xls', '.xlsx']" /><BasicUpload
+            ref="singleUpload3"
+            :maxSize="5"
+            :maxNumber="1"
+            @change="handleChange"
+            :api="addBatchMat"
+            :uploadParams="batchParam"
+            class="my-5"
+            :accept="['.xls', '.xlsx']"
         /></div>
         <Dropdown
           :trigger="['click']"
@@ -42,7 +65,13 @@
               onClick: openUploadModal.bind(null, 3),
             },
           ]"
-          ><a-button preIcon="mdi:page-next-outline" type="primary"> 导入</a-button>
+          ><a-button
+            preIcon="mdi:page-next-outline"
+            type="primary"
+            v-show="hasPermission('batch:import')"
+          >
+            导入</a-button
+          >
         </Dropdown>
         <Dropdown
           :trigger="['click']"
@@ -80,16 +109,26 @@
   import Icon from '@/components/Icon/Icon.vue'
   import { getBatchColumns } from './batchData'
   import { PageWrapper } from '@/components/Page'
-  import { getBatchLogList } from '@/api/productManage/batch'
-  import { uploadMatImg, importModelDownload } from '@/api/productManage/productPlus'
+  import {
+    getBatchLogList,
+    addBatchProdCode,
+    addBatchProdStyle,
+    addBatchMat,
+    addMatBatchDataSync,
+    addProdBatchDataSync,
+  } from '@/api/productManage/batch'
+  import { importModelDownload } from '@/api/productManage/productPlus'
   import { usePermission } from './customUtil/usePermission'
   import { useUtil } from './customUtil/useUtil'
 
   const { hasPermission } = usePermission()
   const { fileDownload } = useUtil()
   const searchInfo = reactive<any>({})
-  const singleUpload = ref()
-  const singleImgParam = ref({ id: null })
+  const syncLoading = ref(false)
+  const singleUpload1 = ref()
+  const singleUpload2 = ref()
+  const singleUpload3 = ref()
+  const batchParam = ref({ id: null })
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -111,16 +150,58 @@
   }
 
   //upload
-  function handleUpload(record: any) {
-    singleImgParam.value.id = record.id
-    singleUpload.value.fileList = []
-    singleUpload.value.openUploadModal()
-  }
   function handleChange(list: string[]) {
     reload()
   }
   function openUploadModal(value) {
-    console.log(value)
+    switch (value) {
+      case 1:
+        singleUpload1.value.fileList = []
+        singleUpload1.value.openUploadModal()
+        break
+      case 2:
+        singleUpload2.value.fileList = []
+        singleUpload2.value.openUploadModal()
+        break
+      case 3:
+        singleUpload3.value.fileList = []
+        singleUpload3.value.openUploadModal()
+        break
+      default:
+        break
+    }
+  }
+  function syncBatch(id, type) {
+    syncLoading.value = true
+    if (type == 3) {
+      addMatBatchDataSync(id)
+        .then((data) => {
+          if (data.code == 200) {
+            success(data.message)
+            syncLoading.value = false
+            reload()
+          } else {
+            error(data.msg)
+          }
+        })
+        .finally(() => {
+          syncLoading.value = false
+        })
+    } else if (type == 2) {
+      addProdBatchDataSync(id)
+        .then((data) => {
+          if (data.code == 200) {
+            success(data.message)
+            syncLoading.value = false
+            reload()
+          } else {
+            error(data.msg)
+          }
+        })
+        .finally(() => {
+          syncLoading.value = false
+        })
+    }
   }
   function downloadExcelModel(name) {
     importModelDownload(name).then((response) => {
