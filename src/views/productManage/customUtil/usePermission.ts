@@ -13,6 +13,12 @@ export function usePermission() {
     .columnPermissions?.map((item) => {
       return Number(item.columnName)
     })
+  //查看商品权限
+  const viewPermissions = permissionList.operations
+    .filter((item: any) => item.operationType == 'productCode:view')[0]
+    .columnPermissions?.map((item) => {
+      return item.columnName
+    })
   /**
    * Determine whether there is permission
    */
@@ -35,5 +41,5 @@ export function usePermission() {
     return maintainPermission?.includes(value)
   }
 
-  return { hasPermission, checkMaintainPermission }
+  return { hasPermission, checkMaintainPermission, viewPermissions }
 }

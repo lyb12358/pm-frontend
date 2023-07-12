@@ -33,6 +33,7 @@ export interface SearchForm {
   gmtCreateEnd?: Date
   gmtModifiedStart?: Date
   gmtModifiedEnd?: Date
+  permissions?: []
 }
 
 export interface ResponseBean<T> {

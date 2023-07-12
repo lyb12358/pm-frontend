@@ -146,7 +146,7 @@
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
-  const { hasPermission, checkMaintainPermission } = usePermission()
+  const { hasPermission, checkMaintainPermission, viewPermissions } = usePermission()
   const { downloadIamge, fileDownload } = useUtil()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
@@ -269,12 +269,13 @@
     if (JSON.stringify(formDate) == '{}') {
       warning('搜索项没有值，不允许导出操作!')
     } else {
+      formDate.permissions = viewPermissions ? viewPermissions : []
       excelLoading.value = true
-      codeExport(searchInfo)
+      codeExport(formDate)
         .then((data) => {
           fileDownload(
             data,
-            '商品编号导出' + dateUtil(Date.now()).format('YYYY-MM-DD HH:mm:ss') + '.xls',
+            '商品编号导出' + dateUtil(Date.now()).format('YYYY-MM-DD HH:mm:ss') + '.xlsx',
           )
         })
         .finally(() => {
