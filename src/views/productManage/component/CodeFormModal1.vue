@@ -130,7 +130,7 @@
       updateSchema([
         {
           field: 'styleId',
-          defaultValue: data.id,
+          defaultValue: data.styleId ? data.styleId : data.id,
         },
         {
           field: 'prodName',
