@@ -4,39 +4,135 @@
     @register="register"
     title="商品五级类别维护"
     :maskClosable="false"
+    @visible-change="handleVisibleChange"
     :confirmLoading="loading"
     @cancel="onModalClose"
     @ok="onOk"
   >
-    <div class="pt-3px pr-3px">
-      <BasicTree :treeData="treeData" :replace-fields="{ key: 'value', title: 'label' }"
-    /></div>
+    <BasicTree
+      @select="opShow"
+      ref="treeRef"
+      :treeData="treeData"
+      :fieldNames="{ key: 'value', title: 'label' }"
+      ><template #title="item"
+        ><Tag :color="genColor(item.depth)">{{ genClassLevel(item.depth) }}</Tag
+        >{{ item.label }}</template
+      ></BasicTree
+    >
+    <template #footer>
+      <Dropdown
+        :trigger="['click']"
+        :dropMenuList="[
+          {
+            event: '1',
+            text: '添加' + className + '同级',
+            icon: 'mdi:plus-box',
+            onClick: handleGetSelectData.bind(null),
+          },
+          {
+            event: '2',
+            text: '添加' + className + '下级',
+            icon: 'mdi:library-plus',
+            onClick: onModalClose.bind(null),
+          },
+          {
+            event: '3',
+            text: '修改' + className,
+            icon: 'mdi:format-list-numbers',
+            onClick: onModalClose.bind(null),
+          },
+        ]"
+        ><a-button type="primary" v-if="treeStatus" postIcon="mdi:arrow-down"> 操作</a-button>
+      </Dropdown>
+      <a-button type="primary" class="ml-2" @click="expandAll(true)"> 全部展开</a-button>
+      <a-button type="primary" @click="expandAll(false)"> 全部收缩</a-button>
+      <a-button @click="onModalClose"> 取消</a-button>
+    </template>
   </BasicModal>
 </template>
 <script setup lang="ts">
-  import { ref, reactive, onMounted, nextTick } from 'vue'
+  import { ref, toRef, reactive, onMounted, nextTick } from 'vue'
+  import { Avatar, Badge, Tag } from 'ant-design-vue'
+  import { Dropdown } from '@/components/Dropdown'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicModal, useModalInner } from '@/components/Modal'
-  import { BasicTree, TreeActionItem, ContextMenuItem } from '@/components/Tree/index'
-  import { getProdClassTree, addProdClass, updateProdClass } from '@/api/productManage/productParam'
+  import {
+    BasicTree,
+    TreeActionType,
+    TreeActionItem,
+    ContextMenuItem,
+  } from '@/components/Tree/index'
+  import { getClassTree, addProdClass, updateProdClass } from '@/api/productManage/productParam'
 
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
-  const treeData = reactive<any>([])
+  const treeData = ref([])
+  const treeRef = ref()
+  const className = ref()
+  const treeStatus = ref(false)
   const loading = ref(false)
 
   const [register, { closeModal }] = useModalInner()
+  function genColor(v) {
+    switch (v) {
+      case 1:
+        return '#027be3'
+      case 2:
+        return '#26a69a'
+      case 3:
+        return '#800080'
+      case 4:
+        return '#31ccec'
+      case 5:
+        return '#f2c037'
+      default:
+        return '#027be3'
+    }
+  }
+  function genClassLevel(v) {
+    switch (v) {
+      case 1:
+        return '归属'
+      case 2:
+        return '类别'
+      case 3:
+        return '大类'
+      case 4:
+        return '中类'
+      case 5:
+        return '小类'
+      default:
+        return '未知'
+    }
+  }
+  function opShow() {
+    const key = treeRef.value.getSelectedKeys()
+    treeStatus.value = Boolean(key[0])
+    if (treeStatus.value) {
+      className.value = treeRef.value.getSelectedNode(key[0]).label
+    }
+  }
+  function onModalClose() {
+    closeModal()
+    expandAll(false)
+  }
+  function expandAll(op: boolean) {
+    treeRef.value.expandAll(op)
+  }
 
-  function onModalClose() {}
+  function handleGetSelectData() {
+    console.log(opShow())
+  }
   function onOk() {}
-  onMounted(async () => {
-    getProdClassTree().then((data) => {
-      if (data.code == 200) {
-        treeData.value = data.data
-      } else {
-        error(data.msg)
-      }
-    })
-  })
+  function handleVisibleChange(v) {
+    v &&
+      getClassTree().then((data) => {
+        if (data.code == 200) {
+          treeData.value = data.data
+        } else {
+          error(data.msg)
+        }
+      })
+  }
 </script>

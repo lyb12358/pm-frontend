@@ -24,6 +24,10 @@ export const updateProdCat = (data) =>
     data,
   })
 //class
+export const getClassTree = () =>
+  simpleHttp.get<ResponseBean<any>>({
+    url: '/pm/classes/tree',
+  })
 export const getProdClassTree = () =>
   defHttp.get<ResponseBean<any>>({
     url: '/pm/prodClasses/tree',
