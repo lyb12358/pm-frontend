@@ -2,9 +2,10 @@
   <BasicModal
     v-bind="$attrs"
     @register="register"
-    title="新建"
+    :title="getName()"
     :maskClosable="false"
     :confirmLoading="loading"
+    @visible-change="handleVisibleChange"
     @cancel="onModalClose"
     @ok="onOk"
   >
@@ -19,24 +20,26 @@
   import { BasicModal, useModalInner } from '@/components/Modal'
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index'
   import { usePermission } from '.././customUtil/usePermission'
-  import { getProdStyleByProdStyle } from '@/api/productManage/productStyle'
 
   const { checkMaintainPermission } = usePermission()
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
-
+  const props = defineProps({
+    singleClassData: { type: Object },
+  })
   const emit = defineEmits(['check', 'register'])
   const modelRef = ref({})
   const loading = ref(false)
+  const opType = ref()
   const schemas: FormSchema[] = [
     {
-      field: 'prodStyle',
+      field: 'label',
       component: 'Input',
-      label: '款号',
+      label: '名称',
       componentProps: {
-        placeholder: '请输入完整准确的款号',
+        placeholder: '请输入名称',
       },
-      rules: [{ min: 6, max: 10, required: true, message: '款号是必填项,6位到10位' }],
+      rules: [{ min: 1, max: 10, required: true, message: '名称是必填项,1位到10位' }],
     },
   ]
   const [registerForm, { resetFields, updateSchema, submit }] = useForm({
@@ -48,32 +51,47 @@
     showActionButtonGroup: false,
   })
 
-  const [register, { closeModal }] = useModalInner()
+  const [register, { closeModal }] = useModalInner((data) => {
+    data && onTypeReceive(data)
+  })
 
   function onModalClose() {
     resetFields()
   }
+  function getName() {
+    if (opType.value == 1) {
+      return '创建同级分类'
+    } else if (opType.value == 2) {
+      return '创建下级分类'
+    } else {
+      return '修改'
+    }
+  }
   function onOk() {
     submit()
   }
+  function onTypeReceive(value) {
+    opType.value = value
+  }
+  function onDataReceive(data) {
+    if (opType.value != 3) {
+      modelRef.value = {
+        depth: data.depth,
+        parentId: data.parentId,
+      }
+    } else {
+      modelRef.value = {
+        value: data.value,
+        depth: data.depth,
+        label: data.label,
+        parentId: data.parentId,
+      }
+    }
+  }
   function handleSubmit(values) {
-    loading.value = true
-    getProdStyleByProdStyle(values.prodStyle)
-      .then((data) => {
-        if (data.code == 200) {
-          if (checkMaintainPermission(data.data.prodType)) {
-            closeModal()
-            onModalClose()
-            emit('check', data.data)
-          } else {
-            error('没有权限维护该类别商品')
-          }
-        } else {
-          error(data.msg)
-        }
-      })
-      .finally(() => {
-        loading.value = false
-      })
+    console.log(opType.value)
+  }
+  function handleVisibleChange(v) {
+    v && props.singleClassData && nextTick(() => onDataReceive(props.singleClassData))
   }
 </script>
