@@ -74,9 +74,14 @@
     opType.value = value
   }
   function onDataReceive(data) {
-    if (opType.value != 3) {
+    if (opType.value == 1) {
       modelRef.value = {
         depth: data.depth,
+        parentId: data.parentId,
+      }
+    } else if (opType.value == 2) {
+      modelRef.value = {
+        depth: data.depth + 1,
         parentId: data.parentId,
       }
     } else {
