@@ -45,7 +45,7 @@
             event: '3',
             text: '删除' + className,
             icon: 'mdi:delete',
-            onClick: onModalClose.bind(null),
+            onClick: deleteClass.bind(null),
           },
         ]"
         ><a-button type="primary" v-if="treeStatus" postIcon="mdi:arrow-down"> 操作</a-button>
@@ -70,7 +70,7 @@
     TreeActionItem,
     ContextMenuItem,
   } from '@/components/Tree/index'
-  import { getClassTree, addProdClass, updateProdClass } from '@/api/productManage/productParam'
+  import { getClassTree, deleteProdClass } from '@/api/productManage/productParam'
 
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
@@ -155,6 +155,23 @@
     })
   }
   function onOk() {}
+  function deleteClass() {
+    const key = treeRef.value.getSelectedKeys()
+    const id = treeRef.value.getSelectedNode(key[0]).value
+    loading.value = true
+    deleteProdClass(id)
+      .then((data) => {
+        if (data.code == 200) {
+          treeReload()
+          success(data.msg)
+        } else {
+          error(data.msg)
+        }
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
   function handleVisibleChange(v) {
     v &&
       getClassTree().then((data) => {

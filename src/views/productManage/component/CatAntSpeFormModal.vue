@@ -19,14 +19,12 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicModal, useModalInner } from '@/components/Modal'
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index'
-  import { usePermission } from '.././customUtil/usePermission'
   import { addProdClass, updateProdClass } from '@/api/productManage/productParam'
 
-  const { checkMaintainPermission } = usePermission()
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
   const props = defineProps({
-    singleClassData: { type: Object },
+    singleData: { type: Object },
   })
   const emit = defineEmits(['check', 'register'])
   const modelRef = ref({})
@@ -53,12 +51,6 @@
       component: 'InputNumber',
       label: 'parentId',
       defaultValue: 0,
-      show: false,
-    },
-    {
-      field: 'depth',
-      component: 'InputNumber',
-      label: 'depth',
       show: false,
     },
   ]
@@ -151,6 +143,6 @@
     }
   }
   function handleVisibleChange(v) {
-    v && props.singleClassData && nextTick(() => onDataReceive(props.singleClassData))
+    v && props.singleData && nextTick(() => onDataReceive(props.singleData))
   }
 </script>

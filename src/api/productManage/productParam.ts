@@ -50,13 +50,17 @@ export const getProdClassOptionsByParent = (id) =>
   })
 export const addProdClass = (data) =>
   simpleHttp.post<ResponseBean<any>>({
-    url: '/pm/prodCat',
+    url: '/pm/prodClass',
     data,
   })
 export const updateProdClass = (data) =>
   simpleHttp.put<ResponseBean<any>>({
-    url: '/pm/prodCat',
+    url: '/pm/prodClass',
     data,
+  })
+export const deleteProdClass = (id) =>
+  simpleHttp.delete<ResponseBean<any>>({
+    url: `/pm/prodClass/${id}`,
   })
 
 //param
