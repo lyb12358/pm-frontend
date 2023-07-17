@@ -10,7 +10,7 @@ export const getProdCatOptionsByParent = (id) =>
     url: `/pm/prodCats/catType/${id}`,
   })
 export const getProdCatListByParent = (id) =>
-  defHttp.get<ResponseBean<any>>({
+  simpleHttp.get<ResponseBean<any>>({
     url: `/pm/prodCats/list/${id}`,
   })
 export const addProdCat = (data) =>
@@ -41,7 +41,7 @@ export const getProdClassTreeOnMiddleType = () =>
     url: '/pm/prodClasses/tree/middleType',
   })
 export const getProdClassTreeOnBigType = () =>
-  defHttp.get<ResponseBean<any>>({
+  simpleHttp.get<ResponseBean<any>>({
     url: '/pm/prodClasses/tree/bigType',
   })
 export const getProdClassOptionsByParent = (id) =>
@@ -77,7 +77,7 @@ export const getProdParamOptionsByParent = (id) =>
     url: `/pm/prodCats/paramType/${id}`,
   })
 export const getProdParamListByParent = (id) =>
-  defHttp.get<ResponseBean<any>>({
+  simpleHttp.get<ResponseBean<any>>({
     url: `/pm/prodParams/list/${id}`,
   })
 export const addProdParam = (data) =>
@@ -100,7 +100,7 @@ export const getProdSpeOptionsByParent = (id) =>
     url: `/pm/prodSpes/speType/${id}`,
   })
 export const getProdSpeListByParent = (id) =>
-  defHttp.get<ResponseBean<any>>({
+  simpleHttp.get<ResponseBean<any>>({
     url: `/pm/prodSpes/list/${id}`,
   })
 export const addProdSpe = (data) =>

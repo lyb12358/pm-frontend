@@ -40,6 +40,7 @@
               {
                 label: '查看日志',
                 icon: 'mdi:pencil-box',
+                onClick: openLogModal.bind(null, true, { type: 3, id: record.id }),
                 auth: 'material:log',
               },
             ]"
@@ -70,6 +71,7 @@
       </template>
     </BasicTable>
     <MatFormModal1 @register="register1" @is-reload="isReload" />
+    <LogModal @register="register2" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
@@ -79,6 +81,7 @@
   import { useModal } from '@/components/Modal'
   import { BasicUpload } from '@/components/Upload'
   import MatFormModal1 from './component/MatFormModal1.vue'
+  import LogModal from './component/LogModal.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
   import { getMaterialColumns, getMaterialFormConfig } from './moduleData'
@@ -122,6 +125,7 @@
   })
   //modal
   const [register1, { openModal: openModal1 }] = useModal()
+  const [register2, { openModal: openLogModal }] = useModal()
   onMounted(async () => {
     getForm().updateSchema({
       field: `prodClass`,

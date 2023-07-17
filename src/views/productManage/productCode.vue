@@ -52,6 +52,7 @@
               {
                 label: '查看日志',
                 icon: 'mdi:pencil-box',
+                onClick: openLogModal.bind(null, true, { type: 2, id: record.id }),
                 auth: 'productCode:log',
               },
               {
@@ -116,6 +117,7 @@
     <CodeFormModal1 @register="register1" @is-reload="isReload" :styleData="styleData" />
     <CodeFormModal2 @register="register2" @check="addCode" />
     <SwitchBindModal @register="register3" @is-reload="isReload" />
+    <LogModal @register="register4" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
@@ -127,6 +129,7 @@
   import CodeFormModal1 from './component/CodeFormModal1.vue'
   import CodeFormModal2 from './component/CodeFormModal2.vue'
   import SwitchBindModal from './component/SwitchBindModal.vue'
+  import LogModal from './component/LogModal.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
   import { getProdCodeColumns, getProdCodeFormConfig } from './moduleData'
@@ -183,6 +186,7 @@
   const [register1, { openModal: openCodeModal }] = useModal()
   const [register2, { openModal: openSearchStyleModal }] = useModal()
   const [register3, { openModal: openSwitchBindModal }] = useModal()
+  const [register4, { openModal: openLogModal }] = useModal()
   function checkPreviewImg({ id, styleId, codeThumbnail, styleThumbnail }: any) {
     if (!(codeThumbnail === null) && !(codeThumbnail === '') && !(codeThumbnail === undefined)) {
       return [baseApi + '/image/code/' + id + '/' + codeThumbnail]

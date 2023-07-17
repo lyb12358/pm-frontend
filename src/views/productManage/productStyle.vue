@@ -46,6 +46,7 @@
               {
                 label: '查看日志',
                 icon: 'mdi:pencil-box',
+                onClick: openLogModal.bind(null, true, { type: 1, id: record.id }),
                 auth: 'productStyle:log',
               },
               {
@@ -90,6 +91,7 @@
     <StyleFormModal1 @register="register1" @is-reload="isReload" />
     <CodeFormModal1 @register="register2" @is-reload="isReload" :styleData="styleData" />
     <SwitchBindModal @register="register3" @is-reload="isReload" />
+    <LogModal @register="register4" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
@@ -101,6 +103,7 @@
   import StyleFormModal1 from './component/StyleFormModal1.vue'
   import CodeFormModal1 from './component/CodeFormModal1.vue'
   import SwitchBindModal from './component/SwitchBindModal.vue'
+  import LogModal from './component/LogModal.vue'
   import { Tag } from 'ant-design-vue'
   import noImage from '@/assets/images/noImage.jpg'
   import { getProdStyleColumns, getProdStyleFormConfig } from './moduleData'
@@ -217,7 +220,7 @@
   const [register1, { openModal: openStyleModal }] = useModal()
   const [register2, { openModal: openCodeModal }] = useModal()
   const [register3, { openModal: openSwitchBindModal }] = useModal()
-
+  const [register4, { openModal: openLogModal }] = useModal()
   onMounted(async () => {
     getForm().updateSchema({
       field: `prodClass`,
