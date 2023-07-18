@@ -19,17 +19,24 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicModal, useModalInner } from '@/components/Modal'
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index'
-  import { addProdClass, updateProdClass } from '@/api/productManage/productParam'
+  import {
+    addProdCat,
+    updateProdCat,
+    addProdSpe,
+    updateProdSpe,
+  } from '@/api/productManage/productParam'
 
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
   const props = defineProps({
-    singleData: { type: Object },
+    isCat: { type: Boolean },
+    isAdd: { type: Boolean },
   })
   const emit = defineEmits(['check', 'register'])
   const modelRef = ref({})
   const loading = ref(false)
-  const opType = ref()
+  const isCat = ref(true)
+  const isAdd = ref(true)
   const schemas: FormSchema[] = [
     {
       field: 'name',
@@ -47,9 +54,9 @@
       show: false,
     },
     {
-      field: 'parentId',
+      field: 'classId',
       component: 'InputNumber',
-      label: 'parentId',
+      label: 'classId',
       defaultValue: 0,
       show: false,
     },
@@ -64,45 +71,42 @@
   })
 
   const [register, { closeModal }] = useModalInner((data) => {
-    data && onTypeReceive(data)
+    data && onDataReceive(data)
   })
 
   function onModalClose() {
+    isAdd.value = true
     closeModal()
     resetFields()
   }
   function getName() {
-    if (opType.value == 1) {
-      return '创建同级分类'
-    } else if (opType.value == 2) {
-      return '创建下级分类'
+    if (isCat.value && isAdd.value) {
+      return '新建品类'
+    } else if (isCat.value) {
+      return '修改品类'
+    } else if (isAdd.value) {
+      return '新建规格'
     } else {
-      return '修改'
+      return '修改规格'
     }
   }
   function onOk() {
     submit()
   }
-  function onTypeReceive(value) {
-    opType.value = value
+  function onTypeReceive(value1, value2) {
+    isCat.value = value1
+    isAdd.value = value2
   }
   function onDataReceive(data) {
-    if (opType.value == 1) {
+    if (data.isAdd) {
       modelRef.value = {
-        depth: data.depth,
-        parentId: data.parentId,
-      }
-    } else if (opType.value == 2) {
-      modelRef.value = {
-        depth: data.depth + 1,
-        parentId: data.value,
+        classId: data.classId,
       }
     } else {
       modelRef.value = {
-        id: data.value,
-        depth: data.depth,
-        name: data.label,
-        parentId: data.parentId,
+        id: data.id,
+        name: data.name,
+        classId: data.classId,
       }
     }
   }
@@ -112,8 +116,36 @@
     values.status = 1
     values.isDel = 0
     values.orderId = 0
-    if (opType.value != 3) {
-      addProdClass(values)
+    if (isCat.value && isAdd.value) {
+      addProdCat(values)
+        .then((data) => {
+          if (data.code == 200) {
+            onModalClose()
+            emit('check', true)
+            success(data.msg)
+          } else {
+            error(data.msg)
+          }
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    } else if (isCat.value) {
+      updateProdCat(values)
+        .then((data) => {
+          if (data.code == 200) {
+            onModalClose()
+            emit('check', true)
+            success(data.msg)
+          } else {
+            error(data.msg)
+          }
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    } else if (isAdd.value) {
+      addProdSpe(values)
         .then((data) => {
           if (data.code == 200) {
             onModalClose()
@@ -127,7 +159,7 @@
           loading.value = false
         })
     } else {
-      updateProdClass(values)
+      updateProdSpe(values)
         .then((data) => {
           if (data.code == 200) {
             onModalClose()
@@ -143,6 +175,6 @@
     }
   }
   function handleVisibleChange(v) {
-    v && props.singleData && nextTick(() => onDataReceive(props.singleData))
+    v && nextTick(() => onTypeReceive(props.isCat, props.isAdd))
   }
 </script>

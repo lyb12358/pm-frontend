@@ -23,9 +23,32 @@
         >
       </Col>
       <Col :span="12">
-        <BasicTable @register="registerTable" :immediate="false" :dataSource="tableData">
+        <BasicTable
+          @register="registerTable"
+          :canResize="false"
+          :immediate="false"
+          :dataSource="tableData"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'op'">
+              <a-button
+                preIcon="icon-park-outline:modify"
+                @click="openCSDialog(false, record)"
+                color="warning"
+              >
+                修改
+              </a-button>
+            </template>
+          </template>
           <template #toolbar>
-            <a-button preIcon="mdi:new-box" type="primary"> 新建 </a-button>
+            <a-button
+              preIcon="mdi:new-box"
+              v-show="isTrigger"
+              @click="openCSDialog(true, { classId: classId })"
+              type="primary"
+            >
+              新建
+            </a-button>
           </template>
         </BasicTable>
       </Col>
@@ -35,7 +58,7 @@
       <a-button @click="onModalClose"> 取消</a-button>
     </template>
   </BasicModal>
-  <!-- <CatAndSpeFormModal @register="register1" @check="tableReload" :singleData="singleData" /> -->
+  <CatAndSpeFormModal @register="register1" @check="tableReload" :isCat="isCat" :isAdd="isAdd" />
 </template>
 <script setup lang="ts">
   import { ref, toRef, reactive, onMounted, nextTick } from 'vue'
@@ -54,11 +77,7 @@
   import {
     getProdClassTreeOnBigType,
     getProdCatListByParent,
-    addProdCat,
-    updateProdCat,
     getProdSpeListByParent,
-    addProdSpe,
-    updateProdSpe,
   } from '@/api/productManage/productParam'
   import { getSyntheticLeadingComments } from 'typescript'
 
@@ -66,10 +85,12 @@
   const { info, success, warning, error } = createMessage
 
   const isCat = ref(false)
+  const isAdd = ref(true)
+  const isTrigger = ref(false)
   const treeData = ref([])
   const treeRef = ref()
+  const classId = ref()
   const tableTitle = ref()
-  const singleData = ref()
   const tableData = ref()
   const loading = ref(false)
 
@@ -81,12 +102,12 @@
   const [registerTable, { reload, getForm }] = useTable({
     title: tableTitle,
     titleHelpMessage: ['点击左侧大类后展现所属的品类/规格信息'],
-    columns: getAnalysisColumns(),
+    columns: getCatSpeColumns(),
     striped: false,
     pagination: { pageSize: 5 },
     showIndexColumn: false,
   })
-  function getAnalysisColumns(): BasicColumn[] {
+  function getCatSpeColumns(): BasicColumn[] {
     return [
       { dataIndex: 'id', title: 'id', key: 'id', defaultHidden: true },
       { dataIndex: 'classId', title: 'classId', key: 'classId', defaultHidden: true },
@@ -139,44 +160,55 @@
       if (depth != 3) {
         return
       } else {
-        const classId = selectedKeys[0]
-        getProdCatListByParent(classId).then((data) => {
-          if (data.code == 200) {
-            tableData.value = data.data
-          } else {
-            error(data.msg)
-          }
-        })
+        isTrigger.value = true
+        classId.value = selectedKeys[0]
+        tableReload()
       }
     } else {
+      isTrigger.value = false
       tableData.value = []
     }
   }
   function onModalClose() {
     closeModal()
+    treeRef.value.setSelectedKeys([])
+    isTrigger.value = false
+    tableData.value = []
     expandAll(false)
   }
   function expandAll(op: boolean) {
     treeRef.value.expandAll(op)
   }
 
-  function treeReload() {
-    getProdClassTreeOnBigType().then((data) => {
-      if (data.code == 200) {
-        treeData.value = data.data
-      } else {
-        error(data.msg)
-      }
-    })
+  function tableReload() {
+    if (isCat.value) {
+      getProdCatListByParent(classId.value).then((data) => {
+        if (data.code == 200) {
+          tableData.value = data.data
+        } else {
+          error(data.msg)
+        }
+      })
+    } else {
+      getProdSpeListByParent(classId.value).then((data) => {
+        if (data.code == 200) {
+          tableData.value = data.data
+        } else {
+          error(data.msg)
+        }
+      })
+    }
   }
-  function tableReload(classId) {
-    getProdCatListByParent(classId).then((data) => {
-      if (data.code == 200) {
-        tableData.value = data.data
-      } else {
-        error(data.msg)
-      }
-    })
+  function openCSDialog(v, record) {
+    if (v) {
+      isAdd.value = true
+      record.isAdd = true
+    } else {
+      record.isAdd = false
+      isAdd.value = false
+    }
+
+    openCSFormModal(true, record)
   }
   function onTypeReceive(data) {
     if (data == 1) {
