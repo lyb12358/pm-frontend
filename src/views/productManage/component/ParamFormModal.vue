@@ -5,7 +5,6 @@
     :title="getName()"
     :maskClosable="false"
     :confirmLoading="loading"
-    @visible-change="handleVisibleChange"
     @cancel="onModalClose"
     @ok="onOk"
   >
@@ -19,17 +18,14 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicModal, useModalInner } from '@/components/Modal'
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index'
-  import { addProdClass, updateProdClass } from '@/api/productManage/productParam'
+  import { addProdParam, updateProdParam } from '@/api/productManage/productParam'
 
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
-  const props = defineProps({
-    singleData: { type: Object },
-  })
   const emit = defineEmits(['check', 'register'])
   const modelRef = ref({})
   const loading = ref(false)
-  const opType = ref()
+  const isAdd = ref(true)
   const schemas: FormSchema[] = [
     {
       field: 'name',
@@ -64,7 +60,7 @@
   })
 
   const [register, { closeModal }] = useModalInner((data) => {
-    data && onTypeReceive(data)
+    data && onDataReceive(data)
   })
 
   function onModalClose() {
@@ -72,10 +68,8 @@
     resetFields()
   }
   function getName() {
-    if (opType.value == 1) {
-      return '创建同级分类'
-    } else if (opType.value == 2) {
-      return '创建下级分类'
+    if (isAdd.value) {
+      return '新建'
     } else {
       return '修改'
     }
@@ -83,25 +77,17 @@
   function onOk() {
     submit()
   }
-  function onTypeReceive(value) {
-    opType.value = value
-  }
   function onDataReceive(data) {
-    if (opType.value == 1) {
+    if (data.isAdd) {
+      isAdd.value = true
       modelRef.value = {
-        depth: data.depth,
         parentId: data.parentId,
       }
-    } else if (opType.value == 2) {
-      modelRef.value = {
-        depth: data.depth + 1,
-        parentId: data.value,
-      }
     } else {
+      isAdd.value = false
       modelRef.value = {
-        id: data.value,
-        depth: data.depth,
-        name: data.label,
+        id: data.id,
+        name: data.name,
         parentId: data.parentId,
       }
     }
@@ -112,8 +98,8 @@
     values.status = 1
     values.isDel = 0
     values.orderId = 0
-    if (opType.value != 3) {
-      addProdClass(values)
+    if (isAdd.value) {
+      addProdParam(values)
         .then((data) => {
           if (data.code == 200) {
             onModalClose()
@@ -127,7 +113,7 @@
           loading.value = false
         })
     } else {
-      updateProdClass(values)
+      updateProdParam(values)
         .then((data) => {
           if (data.code == 200) {
             onModalClose()
@@ -141,8 +127,5 @@
           loading.value = false
         })
     }
-  }
-  function handleVisibleChange(v) {
-    v && props.singleData && nextTick(() => onDataReceive(props.singleData))
   }
 </script>

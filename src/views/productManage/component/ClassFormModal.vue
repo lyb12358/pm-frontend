@@ -81,9 +81,9 @@
   }
   function getName() {
     if (opType.value == 1) {
-      return '创建同级分类'
+      return '新建同级分类'
     } else if (opType.value == 2) {
-      return '创建下级分类'
+      return '新建下级分类'
     } else {
       return '修改'
     }

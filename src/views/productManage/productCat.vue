@@ -10,6 +10,7 @@
     </Card>
     <ClassModal @register="register1" />
     <CatAndSpeModal @register="register2" />
+    <ParamModal @register="register3" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -20,10 +21,12 @@
   import { useModal } from '@/components/Modal'
   import ClassModal from './component/ClassModal.vue'
   import CatAndSpeModal from './component/CatAndSpeModal.vue'
+  import ParamModal from './component/ParamModal.vue'
 
   //modal
   const [register1, { openModal: openClassModal }] = useModal()
   const [register2, { openModal: openCatAndSpeModal }] = useModal()
+  const [register3, { openModal: openParamModal }] = useModal()
 
   const { hasPermission } = usePermission()
   interface NavItem {
@@ -103,27 +106,22 @@
     if (v == 1) {
       openClassModal
     } else if (v == 2) {
-      console.log(v)
+      openParamModal(true, 606)
     } else if (v == 3) {
       openCatAndSpeModal(true, 1)
     } else if (v == 4) {
       openCatAndSpeModal(true, 2)
     } else if (v == 5) {
-      console.log(v)
+      openParamModal(true, 464)
     } else if (v == 6) {
-      console.log(v)
+      openParamModal(true, 465)
     } else if (v == 7) {
-      console.log(v)
+      openParamModal(true, 466)
     } else if (v == 8) {
-      console.log(v)
+      openParamModal(true, 486)
     } else {
-      console.log(v)
+      openParamModal(true, 567)
     }
-    // if (v) {
-    //   openCatAndSpeModal(true, { isCat: true })
-    // } else {
-    //   openCatAndSpeModal(true, { isCat: false })
-    // }
   }
 </script>
 <style lang="less"></style>

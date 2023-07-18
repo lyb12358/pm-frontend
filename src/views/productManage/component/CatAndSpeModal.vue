@@ -63,7 +63,7 @@
 <script setup lang="ts">
   import { ref, toRef, reactive, onMounted, nextTick } from 'vue'
   import { Tag, Row, Col } from 'ant-design-vue'
-  import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
+  import { BasicTable, useTable } from '@/components/Table'
   import { useMessage } from '@/hooks/web/useMessage'
   import { useModal, BasicModal, useModalInner } from '@/components/Modal'
   import CatAndSpeFormModal from './CatAndSpeFormModal.vue'
@@ -79,7 +79,6 @@
     getProdCatListByParent,
     getProdSpeListByParent,
   } from '@/api/productManage/productParam'
-  import { getSyntheticLeadingComments } from 'typescript'
 
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
@@ -111,7 +110,7 @@
     return [
       { dataIndex: 'id', title: 'id', key: 'id', defaultHidden: true },
       { dataIndex: 'classId', title: 'classId', key: 'classId', defaultHidden: true },
-      { dataIndex: 'name', title: '分析名称', key: 'name' },
+      { dataIndex: 'name', title: '名称', key: 'name' },
       { dataIndex: 'op', title: '操作', key: 'op' },
     ]
   }
