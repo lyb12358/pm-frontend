@@ -43,9 +43,33 @@ export function getProdCodeColumns(): BasicColumn[] {
     { dataIndex: 'boxVolume', title: '装箱体积', key: 'boxVolume', defaultHidden: true },
     { dataIndex: 'boxWeight', title: '箱重量', key: 'boxWeight', defaultHidden: true },
     { dataIndex: 'boxWarn', title: '散货预警量', key: 'boxWarn', defaultHidden: true },
-    { dataIndex: 'isRemind', title: '库存提醒', key: 'isRemind', defaultHidden: true },
-    { dataIndex: 'isSecurity', title: '是否防伪码', key: 'isSecurity', defaultHidden: true },
-    { dataIndex: 'isRate', title: '计算周转率', key: 'isRate', defaultHidden: true },
+    {
+      dataIndex: 'isRemind',
+      title: '库存提醒',
+      key: 'isRemind',
+      defaultHidden: true,
+      format: (text) => {
+        return text ? '是' : '否'
+      },
+    },
+    {
+      dataIndex: 'isSecurity',
+      title: '是否防伪码',
+      key: 'isSecurity',
+      defaultHidden: true,
+      format: (text) => {
+        return text ? '是' : '否'
+      },
+    },
+    {
+      dataIndex: 'isRate',
+      title: '计算周转率',
+      key: 'isRate',
+      defaultHidden: true,
+      format: (text) => {
+        return text ? '是' : '否'
+      },
+    },
     { dataIndex: 'prodCycle', title: '生产周期(天)', key: 'prodCycle', defaultHidden: true },
     { dataIndex: 'yearName', title: '年份', key: 'yearName', defaultHidden: true },
     { dataIndex: 'seasonName', title: '季节', key: 'seasonName', defaultHidden: true },
@@ -379,7 +403,15 @@ export function getProdStyleColumns(): BasicColumn[] {
     { dataIndex: 'levelName', title: '档次', key: 'levelName', defaultHidden: true },
     { dataIndex: 'designerName', title: '设计师', key: 'designerName', defaultHidden: true },
     { dataIndex: 'styleIsSync', title: '是否同步', key: 'styleIsSync', defaultHidden: true },
-    { dataIndex: 'gmtCreate', title: '创建时间', key: 'gmtCreate', defaultHidden: true },
+    {
+      dataIndex: 'gmtCreate',
+      title: '创建时间',
+      key: 'gmtCreate',
+      defaultHidden: true,
+      format: (text) => {
+        return dateUtil(text).format('YYYY-MM-DD HH:mm:ss')
+      },
+    },
     {
       dataIndex: 'gmtModified',
       title: '修改时间',
@@ -394,9 +426,6 @@ export function getProdStyleColumns(): BasicColumn[] {
       title: '集团同步类别',
       key: 'syncProtype',
       defaultHidden: true,
-      format: (text) => {
-        return dateUtil(text).format('YYYY-MM-DD HH:mm:ss')
-      },
     },
   ]
 }
@@ -414,7 +443,7 @@ export function getProdStyleFormConfig(): Partial<FormProps> {
     ],
     schemas: [
       {
-        field: `prodstyle`,
+        field: `prodStyle`,
         label: `款号`,
         component: 'Input',
       },

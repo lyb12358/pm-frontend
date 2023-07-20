@@ -104,7 +104,7 @@
 
   function openModal(v) {
     if (v == 1) {
-      openClassModal
+      openClassModal(true)
     } else if (v == 2) {
       openParamModal(true, 606)
     } else if (v == 3) {

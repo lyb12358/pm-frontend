@@ -137,7 +137,7 @@
 
   function checkPreviewImg({ id, thumbnail }: any) {
     if (!(thumbnail === null) && !(thumbnail === '') && !(thumbnail === undefined)) {
-      return [baseApi + '/image/style/' + id + '/' + thumbnail]
+      return [baseApi + '/image/mat/' + id + '/' + thumbnail]
     } else {
       return [noImage]
     }
