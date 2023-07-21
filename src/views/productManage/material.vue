@@ -144,7 +144,7 @@
   }
   function checkImg({ id, image }: any) {
     if (!(image === null) && !(image === '') && !(image === undefined)) {
-      return [baseApi + '/image/style/' + id + '/' + image]
+      return [baseApi + '/image/mat/' + id + '/' + image]
     } else {
       return [noImage]
     }

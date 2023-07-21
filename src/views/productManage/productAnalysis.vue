@@ -1,15 +1,21 @@
 <template>
   <PageWrapper contentBackground contentClass="flex" dense contentFullHeight>
     <BasicTable @register="registerTable">
-      <!-- <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'isSync'">
-          <Icon
-            :icon="record.isSync ? 'icon-park-solid:check-one' : 'fluent-mdl2:status-error-full'"
-            :color="record.isSync ? '#22c55e' : 'red'"
-            size="20"
-          />
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'op'">
+          <a-button size="small" @click="openAnalysisModal(true, record)" color="warning">
+            修改
+          </a-button>
+          <a-button
+            size="small"
+            class="ml-1"
+            @click="openAnalysisDetailModal(true, record)"
+            color="success"
+          >
+            细节
+          </a-button>
         </template>
-      </template> -->
+      </template>
       <template #toolbar>
         <!-- 平时隐藏上传按钮，通过其他按钮来控制显示 -->
         <div v-show="false">
@@ -23,9 +29,11 @@
             class="my-5"
             :accept="['image/*']"
         /></div>
-        <a-button preIcon="mdi:new-box" type="primary"> 新建 </a-button>
+        <a-button preIcon="mdi:new-box" type="primary" @click="openAnalysisModal"> 新建 </a-button>
       </template>
     </BasicTable>
+    <AnalysisFormModal @register="register1" @is-reload="isReload" />
+    <AnalysisDetailModal @register="register2" />
   </PageWrapper>
 </template>
 <script setup lang="ts">
@@ -33,6 +41,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicTable, useTable, TableImg, TableAction } from '@/components/Table'
   import { useModal } from '@/components/Modal'
+  import AnalysisFormModal from './component/AnalysisFormModal.vue'
+  import AnalysisDetailModal from './component/AnalysisDetailModal.vue'
   import { BasicUpload } from '@/components/Upload'
   import Icon from '@/components/Icon/Icon.vue'
   import { getAnalysisColumns } from './productAnalysisData'
@@ -60,7 +70,9 @@
     searchInfo,
     showIndexColumn: false,
   })
-
+  //modal
+  const [register1, { openModal: openAnalysisModal }] = useModal()
+  const [register2, { openModal: openAnalysisDetailModal }] = useModal()
   function isReload(value) {
     value && reload()
   }
@@ -73,6 +85,9 @@
   }
   function handleChange(list: string[]) {
     reload()
+  }
+  function openAnalysisDialog(record) {
+    console.log(record)
   }
   onMounted(async () => {})
 </script>
