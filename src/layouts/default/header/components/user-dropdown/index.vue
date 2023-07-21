@@ -11,12 +11,7 @@
 
     <template #overlay>
       <Menu @click="handleMenuClick">
-        <!-- <MenuItem
-          key="doc"
-          :text="t('layout.header.dropdownItemDoc')"
-          icon="ion:document-text-outline"
-          v-if="getShowDoc"
-        /> -->
+        <MenuItem key="doc" text="中台" icon="ion:document-text-outline" v-if="getShowDoc" />
         <MenuDivider v-if="getShowDoc" />
         <MenuItem
           v-if="getUseLockPage"
@@ -37,6 +32,7 @@
 <script lang="ts">
   // components
   import { Dropdown, Menu } from 'ant-design-vue'
+  import Icon from '@/components/Icon/Icon.vue'
   import type { MenuInfo } from 'ant-design-vue/lib/menu/src/interface'
 
   import { defineComponent, computed } from 'vue'
@@ -49,18 +45,21 @@
   import { useDesign } from '/@/hooks/web/useDesign'
   import { useModal } from '/@/components/Modal'
 
-  import headerImg from '/@/assets/images/header.jpg'
+  import headerImg from '/@/assets/images/noImage.jpg'
   import { propTypes } from '/@/utils/propTypes'
   import { openWindow } from '/@/utils'
 
   import { createAsyncComponent } from '/@/utils/factory/createAsyncComponent'
+  import { useGlobSetting } from '/@/hooks/setting'
 
+  const { apiUrl } = useGlobSetting()
   type MenuEvent = 'logout' | 'doc' | 'lock'
 
   export default defineComponent({
     name: 'UserDropdown',
     components: {
       Dropdown,
+      Icon,
       Menu,
       MenuItem: createAsyncComponent(() => import('./DropMenuItem.vue')),
       MenuDivider: Menu.Divider,
@@ -76,7 +75,7 @@
       const userStore = useUserStore()
 
       const getUserInfo = computed(() => {
-        const { realName = '', avatar, desc } = userStore.getUserInfo || {}
+        const { realName = '', avatar, desc } = userStore.getUserInfo.sysUser || {}
         return { realName, avatar: avatar || headerImg, desc }
       })
 
@@ -93,7 +92,8 @@
 
       // open doc
       function openDoc() {
-        openWindow(DOC_URL)
+        // openWindow(DOC_URL)
+        openWindow(apiUrl.split('/usercenter')[0] + '/uums/webNav')
       }
 
       function handleMenuClick(e: MenuInfo) {

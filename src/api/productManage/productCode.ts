@@ -30,6 +30,10 @@ export const switchBind = (oldId, newId, codeId) =>
   })
 //计数
 export const codeCount = () =>
-  defHttp.get<ResponseBean<any>>({
+  simpleHttp.get<ResponseBean<any>>({
     url: '/pm/prodCode/count',
+  })
+export const imageCount = () =>
+  simpleHttp.get<ResponseBean<any>>({
+    url: '/pm/image/count',
   })

@@ -39,6 +39,6 @@ export const deleteProdStyle = (id) =>
   })
 //计数
 export const styleCount = () =>
-  defHttp.get<ResponseBean<any>>({
+  simpleHttp.get<ResponseBean<any>>({
     url: '/pm/prodStyle/count',
   })

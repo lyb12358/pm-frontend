@@ -48,6 +48,8 @@ export interface uums {
   mobile?: string
   realName: string | ''
   workCode?: string
+  avatar?: string
+  desc?: string
 }
 
 export interface BeforeMiniState {

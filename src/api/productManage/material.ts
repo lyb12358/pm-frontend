@@ -26,6 +26,6 @@ export const updateMat = (data) =>
   })
 //计数
 export const matCount = () =>
-  defHttp.get<ResponseBean<any>>({
+  simpleHttp.get<ResponseBean<any>>({
     url: '/pm/mat/count',
   })
