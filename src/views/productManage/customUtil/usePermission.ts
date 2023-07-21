@@ -41,5 +41,5 @@ export function usePermission() {
     return maintainPermission?.includes(value)
   }
 
-  return { hasPermission, checkMaintainPermission, viewPermissions }
+  return { maintainPermission, hasPermission, checkMaintainPermission, viewPermissions }
 }

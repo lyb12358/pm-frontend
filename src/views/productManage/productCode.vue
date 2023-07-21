@@ -149,10 +149,11 @@
   import { useGlobSetting } from '/@/hooks/setting'
 
   const { apiUrl } = useGlobSetting()
-  const { hasPermission, checkMaintainPermission, viewPermissions } = usePermission()
+  const { hasPermission, checkMaintainPermission, viewPermissions, maintainPermission } =
+    usePermission()
   const { downloadIamge, fileDownload } = useUtil()
   const baseApi = apiUrl + '/pm'
-  const searchInfo = reactive<any>({})
+  const searchInfo = { classPermission: maintainPermission }
   const excelLoading = ref(false)
   const styleData = ref({})
   const singleUpload = ref()
@@ -269,13 +270,14 @@
   }
   //export
   function handleExport() {
-    const formDate = getForm().getFieldsValue()
-    if (JSON.stringify(formDate) == '{}') {
+    const formData = getForm().getFieldsValue()
+    if (JSON.stringify(formData) == '{}') {
       warning('搜索项没有值，不允许导出操作!')
     } else {
-      formDate.permissions = viewPermissions ? viewPermissions : []
+      formData.permissions = viewPermissions ? viewPermissions : []
+      formData.classPermission = maintainPermission
       excelLoading.value = true
-      codeExport(formDate)
+      codeExport(formData)
         .then((data) => {
           fileDownload(
             data,
