@@ -45,7 +45,7 @@
   import { useDesign } from '/@/hooks/web/useDesign'
   import { useModal } from '/@/components/Modal'
 
-  import headerImg from '/@/assets/images/noImage.jpg'
+  import headerImg from '/@/assets/images/avatar.png'
   import { propTypes } from '/@/utils/propTypes'
   import { openWindow } from '/@/utils'
 
