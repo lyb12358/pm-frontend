@@ -39,14 +39,19 @@
             </template>
           </template>
           <template #toolbar>
-            <a-button
-              preIcon="mdi:new-box"
-              v-show="isTrigger"
-              @click="openDetailFormDialog(true, { classId: classId, analysisId: analysisId })"
-              type="primary"
+            <div class="md:flex">
+              <a-input placeholder="搜索" v-model:value="searchName" allowClear />
+              <a-button class="ml-2" @click="tableReload" type="primary"> 搜索 </a-button>
+              <a-button
+                class="ml-2"
+                preIcon="mdi:new-box"
+                v-show="isTrigger"
+                @click="openDetailFormDialog(true, { classId: classId, analysisId: analysisId })"
+                type="primary"
+              >
+                新建
+              </a-button></div
             >
-              新建
-            </a-button>
           </template>
         </BasicTable>
       </Col>
@@ -86,6 +91,7 @@
   const treeRef = ref()
   const classId = ref()
   const tableData = ref()
+  const searchName = ref()
   const loading = ref(false)
 
   const [register1, { openModal: openAnalysisDetailFormModal }] = useModal()
@@ -101,7 +107,7 @@
     tableReload()
   })
   const [registerTable, { reload, getForm }] = useTable({
-    title: '分析细节维护(一个分类只能维护一条细节)',
+    title: '分析细节维护',
     columns: getDetailColumns(),
     striped: false,
     pagination: { pageSize: 5 },
@@ -167,6 +173,7 @@
   function onModalClose() {
     closeModal()
     treeRef.value.setSelectedKeys([])
+    searchName.value = null
     isTrigger.value = false
     tableData.value = []
     expandAll(false)
@@ -178,7 +185,13 @@
   function tableReload() {
     getAnalysisDetailListByParent(analysisId.value).then((data) => {
       if (data.code == 200) {
-        tableData.value = data.data
+        if (searchName.value) {
+          tableData.value = data.data.filter((item) => {
+            return item.name.includes(searchName.value)
+          })
+        } else {
+          tableData.value = data.data
+        }
       } else {
         error(data.msg)
       }

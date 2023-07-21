@@ -25,13 +25,18 @@
         </template>
       </template>
       <template #toolbar>
-        <a-button
-          preIcon="mdi:new-box"
-          @click="openParamDialog(true, { parentId: paramBase })"
-          type="primary"
+        <div class="md:flex">
+          <a-input placeholder="搜索" v-model:value="searchName" allowClear />
+          <a-button class="ml-2" @click="tableReload" type="primary"> 搜索 </a-button>
+          <a-button
+            class="ml-2"
+            preIcon="mdi:new-box"
+            @click="openParamDialog(true, { parentId: paramBase })"
+            type="primary"
+          >
+            新建
+          </a-button></div
         >
-          新建
-        </a-button>
       </template>
     </BasicTable>
     <template #footer>
@@ -54,6 +59,7 @@
 
   const tableTitle = ref()
   const tableData = ref()
+  const searchName = ref()
   const paramBase = ref()
   const loading = ref(false)
 
@@ -96,12 +102,19 @@
   }
   function onModalClose() {
     closeModal()
+    searchName.value = null
     tableData.value = []
   }
   function tableReload() {
     getProdParamListByParent(paramBase.value).then((data) => {
       if (data.code == 200) {
-        tableData.value = data.data
+        if (searchName.value) {
+          tableData.value = data.data.filter((item) => {
+            return item.name.includes(searchName.value)
+          })
+        } else {
+          tableData.value = data.data
+        }
       } else {
         error(data.msg)
       }

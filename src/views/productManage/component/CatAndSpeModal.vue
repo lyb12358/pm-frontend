@@ -10,7 +10,7 @@
     @cancel="onModalClose"
   >
     <Row :gutter="[16, 16]">
-      <Col :span="12">
+      <Col :span="10">
         <BasicTree
           @select="triggerTableAct"
           ref="treeRef"
@@ -22,7 +22,7 @@
           ></BasicTree
         >
       </Col>
-      <Col :span="12">
+      <Col :span="14">
         <BasicTable
           @register="registerTable"
           :canResize="false"
@@ -41,14 +41,26 @@
             </template>
           </template>
           <template #toolbar>
-            <a-button
-              preIcon="mdi:new-box"
-              v-show="isTrigger"
-              @click="openCSDialog(true, { classId: classId })"
-              type="primary"
+            <div class="md:flex">
+              <a-input
+                v-show="isTrigger"
+                placeholder="搜索"
+                v-model:value="searchName"
+                allowClear
+              />
+              <a-button class="ml-2" v-show="isTrigger" @click="tableReload" type="primary">
+                搜索
+              </a-button>
+              <a-button
+                class="ml-2"
+                preIcon="mdi:new-box"
+                v-show="isTrigger"
+                @click="openCSDialog(true, { classId: classId })"
+                type="primary"
+              >
+                新建
+              </a-button></div
             >
-              新建
-            </a-button>
           </template>
         </BasicTable>
       </Col>
@@ -86,6 +98,7 @@
   const isCat = ref(false)
   const isAdd = ref(true)
   const isTrigger = ref(false)
+  const searchName = ref()
   const treeData = ref([])
   const treeRef = ref()
   const classId = ref()
@@ -154,10 +167,12 @@
     }
   }
   function triggerTableAct(selectedKeys, { selected, selectedNodes }) {
+    searchName.value = null
     if (selected) {
       const depth = selectedNodes[0].depth
       if (depth != 3) {
-        return
+        isTrigger.value = false
+        tableData.value = []
       } else {
         isTrigger.value = true
         classId.value = selectedKeys[0]
@@ -171,6 +186,7 @@
   function onModalClose() {
     closeModal()
     treeRef.value.setSelectedKeys([])
+    searchName.value = null
     isTrigger.value = false
     tableData.value = []
     expandAll(false)
@@ -183,7 +199,13 @@
     if (isCat.value) {
       getProdCatListByParent(classId.value).then((data) => {
         if (data.code == 200) {
-          tableData.value = data.data
+          if (searchName.value) {
+            tableData.value = data.data.filter((item) => {
+              return item.name.includes(searchName.value)
+            })
+          } else {
+            tableData.value = data.data
+          }
         } else {
           error(data.msg)
         }
@@ -191,7 +213,13 @@
     } else {
       getProdSpeListByParent(classId.value).then((data) => {
         if (data.code == 200) {
-          tableData.value = data.data
+          if (searchName.value) {
+            tableData.value = data.data.filter((item) => {
+              return item.name.includes(searchName.value)
+            })
+          } else {
+            tableData.value = data.data
+          }
         } else {
           error(data.msg)
         }
@@ -208,6 +236,9 @@
     }
 
     openCSFormModal(true, record)
+  }
+  function search() {
+    console.log(searchName.value)
   }
   function onTypeReceive(data) {
     if (data == 1) {
