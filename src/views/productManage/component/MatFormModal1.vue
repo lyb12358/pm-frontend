@@ -133,7 +133,7 @@
         {
           field: 'matCat',
           componentProps: {
-            options: (await getProdCatOptions()).filter((item) => item.classId == matFamily[2]),
+            options: (await getProdCatOptions()).filter((item) => item.parentId == matFamily[2]),
           },
         },
         {
@@ -226,7 +226,9 @@
                     {
                       field: 'matCat',
                       componentProps: {
-                        options: (await getProdCatOptions()).filter((item) => item.classId == e[2]),
+                        options: (await getProdCatOptions()).filter(
+                          (item) => item.parentId == e[2],
+                        ),
                       },
                     },
                     {

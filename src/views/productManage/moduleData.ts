@@ -184,7 +184,7 @@ export const codeModalSchemas: FormSchema[] = [
     field: 'prodName',
     component: 'Input',
     label: '名称',
-    rules: [{ max: 30, required: true, message: '名称是必填项,且不超过30位' }],
+    rules: [{ max: 50, required: true, message: '名称是必填项,且不超过50位' }],
   },
   {
     field: 'prodCat',

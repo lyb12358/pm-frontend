@@ -142,7 +142,7 @@
       {
         field: 'prodCat',
         componentProps: {
-          options: (await getProdCatOptions()).filter((item) => item.classId == data.bigType),
+          options: (await getProdCatOptions()).filter((item) => item.parentId == data.bigType),
         },
       },
       {

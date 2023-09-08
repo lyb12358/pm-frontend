@@ -45,7 +45,7 @@
       componentProps: {
         placeholder: '请输入名称',
       },
-      rules: [{ min: 1, max: 10, required: true, message: '名称是必填项,1位到10位' }],
+      rules: [{ min: 1, max: 100, required: true, message: '名称是必填项,1位到100位' }],
     },
     {
       field: 'id',
