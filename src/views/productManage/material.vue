@@ -13,7 +13,7 @@
             stopButtonPropagation
             :size="60"
             :simpleShow="true"
-            :imgList="checkPreviewImg(record)"
+            :imgList="checkImg(record)"
           />
         </template>
         <template v-if="column.key === 'action'">
