@@ -110,13 +110,22 @@
           @click="openSearchStyleModal"
           v-show="hasPermission('productCode:add')"
         >
-          新建
+          新建(通过款号)
+        </a-button>
+        <a-button
+          preIcon="mdi:new-box"
+          type="primary"
+          @click="openSearchStyleNameModal"
+          v-show="hasPermission('productCode:add')"
+        >
+          新建(通过款名)
         </a-button>
       </template>
     </BasicTable>
     <CodeFormModal1 @register="register1" @is-reload="isReload" :styleData="styleData" />
     <CodeFormModal2 @register="register2" @check="addCode" />
     <SwitchBindModal @register="register3" @is-reload="isReload" />
+    <CodeFormModal3 @register="register5" @check="addCode" />
     <LogModal @register="register4" />
   </PageWrapper>
 </template>
@@ -128,6 +137,7 @@
   import { BasicUpload } from '@/components/Upload'
   import CodeFormModal1 from './component/CodeFormModal1.vue'
   import CodeFormModal2 from './component/CodeFormModal2.vue'
+  import CodeFormModal3 from './component/CodeFormModal3.vue'
   import SwitchBindModal from './component/SwitchBindModal.vue'
   import LogModal from './component/LogModal.vue'
   import { Tag } from 'ant-design-vue'
@@ -186,6 +196,7 @@
   //modal
   const [register1, { openModal: openCodeModal }] = useModal()
   const [register2, { openModal: openSearchStyleModal }] = useModal()
+  const [register5, { openModal: openSearchStyleNameModal }] = useModal()
   const [register3, { openModal: openSwitchBindModal }] = useModal()
   const [register4, { openModal: openLogModal }] = useModal()
   function checkPreviewImg({ id, styleId, codeThumbnail, styleThumbnail }: any) {

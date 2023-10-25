@@ -11,7 +11,7 @@ export const getProdStyleList = (data: SearchForm) =>
     },
   })
 export const getProdStyleOptions = (data) =>
-  defHttp.post<ResponseBean<any>>({
+  defHttp.post<Recordable<any>>({
     url: '/pm/prodStyles/options',
     data,
   })

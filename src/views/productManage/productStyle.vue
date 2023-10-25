@@ -76,8 +76,25 @@
             :api="uploadStyleImg"
             :uploadParams="singleImgParam"
             class="my-5"
+            :accept="['image/*']" /><BasicUpload
+            ref="multiUpload"
+            :maxSize="5"
+            :maxNumber="100"
+            @change="handleChange"
+            :api="uploadBatchStyleImg"
+            :uploadParams="multiImgParam"
+            class="my-5"
             :accept="['image/*']"
         /></div>
+        <a-button
+          preIcon="ep:upload-filled"
+          type="primary"
+          @click="handleMultiUpload"
+          :loading="excelLoading"
+          v-show="hasPermission('productCode:batchImageUpload')"
+        >
+          批量上传图片
+        </a-button>
         <a-button
           preIcon="mdi:new-box"
           type="primary"
@@ -114,7 +131,7 @@
     deleteProdStyle,
   } from '@/api/productManage/productStyle'
   import { getProdClassTreeOnMiddleType } from '@/api/productManage/productParam'
-  import { uploadStyleImg } from '@/api/productManage/productPlus'
+  import { uploadStyleImg, uploadBatchStyleImg } from '@/api/productManage/productPlus'
   import { usePermission } from './customUtil/usePermission'
   import { useUtil } from './customUtil/useUtil'
   import { useGlobSetting } from '/@/hooks/setting'
@@ -124,9 +141,12 @@
   const { downloadIamge } = useUtil()
   const baseApi = apiUrl + '/pm'
   const searchInfo = reactive<any>({})
+  const excelLoading = ref(false)
   const styleData = ref({})
   const singleUpload = ref()
   const singleImgParam = ref({ id: null })
+  const multiImgParam = ref({})
+  const multiUpload = ref()
   const { createMessage } = useMessage()
   const { info, success, warning, error } = createMessage
 
@@ -201,6 +221,10 @@
   }
   function handleChange(list: string[]) {
     reload()
+  }
+  function handleMultiUpload(record: any) {
+    multiUpload.value.fileList = []
+    multiUpload.value.openUploadModal()
   }
   //switch bind
   function switchBind(record: any) {

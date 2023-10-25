@@ -11,11 +11,11 @@ export const getBatchLogList = (data: SearchForm) =>
     url: '/pm/batchLogs',
     data,
   })
-export const addMatBatchDataSync = (id) =>
+export const matBatchDataSync = (id) =>
   simpleHttp.post<ResponseBean<any>>({
     url: `/pm/batch/sync/mat/${id}`,
   })
-export const addProdBatchDataSync = (id) =>
+export const prodBatchDataSync = (id) =>
   simpleHttp.post<ResponseBean<any>>({
     url: `/pm/batch/sync/prod/${id}`,
   })
@@ -53,6 +53,45 @@ export function addBatchMat(
   return defHttp.uploadFile<UploadApiResult>(
     {
       url: apiUrl + '/pm/mat/batch',
+      onUploadProgress,
+    },
+    params,
+  )
+}
+
+//modify
+
+export function modifyBatchProdCode(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: ProgressEvent) => void,
+) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: apiUrl + '/pm/prodCode/batch/modify',
+      onUploadProgress,
+    },
+    params,
+  )
+}
+export function modifyBatchProdStyle(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: ProgressEvent) => void,
+) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: apiUrl + '/pm/prodStyle/batch/modify',
+      onUploadProgress,
+    },
+    params,
+  )
+}
+export function modifyBatchMat(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: ProgressEvent) => void,
+) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: apiUrl + '/pm/mat/batch/modify',
       onUploadProgress,
     },
     params,

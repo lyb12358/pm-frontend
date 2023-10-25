@@ -26,7 +26,16 @@
 
     <div class="upload-modal-toolbar">
       <Alert :message="getHelpText" type="info" banner class="upload-modal-toolbar__text" />
-
+      <div class="ml-4"
+        ><UploadDragger
+          :accept="getStringAccept"
+          :multiple="multiple"
+          :before-upload="beforeUpload"
+          :show-upload-list="false"
+        >
+          <p class="ant-upload-text">拖拽上传区域</p>
+        </UploadDragger></div
+      >
       <Upload
         :accept="getStringAccept"
         :multiple="multiple"
@@ -44,7 +53,7 @@
 </template>
 <script lang="ts">
   import { defineComponent, reactive, ref, toRefs, unref, computed, PropType } from 'vue'
-  import { Upload, Alert } from 'ant-design-vue'
+  import { Upload, Alert, UploadDragger } from 'ant-design-vue'
   import { BasicModal, useModalInner } from '/@/components/Modal'
   //   import { BasicTable, useTable } from '/@/components/Table';
   // hooks
@@ -63,7 +72,7 @@
   import { useI18n } from '/@/hooks/web/useI18n'
 
   export default defineComponent({
-    components: { BasicModal, Upload, Alert, FileList },
+    components: { BasicModal, Upload, Alert, UploadDragger, FileList },
     props: {
       ...basicProps,
       previewFileList: {
