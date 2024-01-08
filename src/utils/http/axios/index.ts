@@ -243,7 +243,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // authentication schemes，e.g: Bearer
         // authenticationScheme: 'Bearer',
         authenticationScheme: 'x-token',
-        timeout: 10 * 1000,
+        timeout: 30 * 1000,
         //跨域是否带上cookie
         withCredentials: true,
         // 基础接口地址

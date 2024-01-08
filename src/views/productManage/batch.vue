@@ -304,7 +304,7 @@
         .finally(() => {
           syncLoading.value = false
         })
-    } else if (type == 2 || type == 5) {
+    } else if (type == 2 || type == 4 || type == 5) {
       prodBatchDataSync(id)
         .then((data) => {
           if (data.code == 200) {
