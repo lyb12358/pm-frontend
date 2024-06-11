@@ -10,13 +10,13 @@ export function usePermission() {
   //维护商品权限
   const maintainPermission = permissionList.operations
     .filter((item: any) => item.operationType == 'productStyle:permission')[0]
-    .columnPermissions?.map((item) => {
+    ?.columnPermissions?.map((item) => {
       return Number(item.columnName)
     })
   //查看商品权限
   const viewPermissions = permissionList.operations
     .filter((item: any) => item.operationType == 'productCode:view')[0]
-    .columnPermissions?.map((item) => {
+    ?.columnPermissions?.map((item) => {
       return item.columnName
     })
   /**

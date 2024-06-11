@@ -204,15 +204,15 @@
 
   const styleColumnPermissions = permissionList.operations.filter(
     (item: any) => item.operationType == 'productStyle:update',
-  )[0].columnPermissions
+  )[0]?.columnPermissions
 
   const codeColumnPermissions = permissionList.operations.filter(
     (item: any) => item.operationType == 'productCode:update',
-  )[0].columnPermissions
+  )[0]?.columnPermissions
 
   const matColumnPermissions = permissionList.operations.filter(
     (item: any) => item.operationType == 'material:update',
-  )[0].columnPermissions
+  )[0]?.columnPermissions
 
   const { hasPermission } = usePermission()
   const { fileDownload } = useUtil()
