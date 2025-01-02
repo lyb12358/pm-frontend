@@ -83,6 +83,8 @@ export function getProdCodeColumns(): BasicColumn[] {
     { dataIndex: 'singleWeight', title: '单品净重', key: 'singleWeight', defaultHidden: true },
     { dataIndex: 'pakMat', title: '包装材质', key: 'pakMat', defaultHidden: true },
     { dataIndex: 'pakSize', title: '单品包装尺寸', key: 'pakSize', defaultHidden: true },
+    //20241009
+    { dataIndex: 'multiOrder', title: '倍数下单', key: 'multiOrder', defaultHidden: true },
     {
       dataIndex: 'gmtCreate',
       title: '创建时间',
@@ -364,6 +366,14 @@ export const codeModalSchemas: FormSchema[] = [
     field: 'pakSize',
     component: 'Input',
     label: '单品包装尺寸',
+  },
+  //20241009
+  {
+    field: 'multiOrder',
+    component: 'InputNumber',
+    label: '倍数下单',
+    rules: [{ type: 'number', min: 1, max: 999999, message: '请填写有效值' }],
+    componentProps: { min: 1, max: 999999, precision: 0 },
   },
   {
     field: 'remark',

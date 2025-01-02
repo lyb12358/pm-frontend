@@ -198,6 +198,8 @@
       pakMat: data.pakMat,
       pakSize: data.pakSize,
       remark: data.remark,
+      //20241009
+      multiOrder: data.multiOrder,
     }
     //hide col when do not have permission
     columnPermissions &&
